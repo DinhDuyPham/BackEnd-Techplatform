@@ -36,12 +36,13 @@ public class AuthHelper {
         this.sessionService = sessionService;
     }
 
-    public AuthUser loadAuthUserFromToken(String authToken) {
+    public AuthUser loadAuthUserFromToken(String authToken, HttpServletRequest request) {
         Session session = sessionService.getByIdAndSystemStatus(authToken, SystemStatus.ACTIVE);
         Validator.notNull(session, RestAPIStatus.UNAUTHORIZED, RestStatusMessage.UNAUTHORIZED);
         Validator.mustTrue(DateUtil.isBeforeTime(DateUtil.getUTCNow().getTime(), session.getExpireTime()), RestAPIStatus.UNAUTHORIZED, RestStatusMessage.UNAUTHORIZED);
-        User user = userService.getById(session.getData());
+        User user = userService.getById(session.getUserId());
         Validator.notNull(user, RestAPIStatus.UNAUTHORIZED, RestStatusMessage.UNAUTHORIZED);
+        user = updateLastIpAddress(user, request);
         return new AuthUser(user);
     }
 
@@ -61,6 +62,12 @@ public class AuthHelper {
                 .passwordHash(passwordHash)
                 .passwordSalt(passwordSalt)
                 .build();
+    }
+
+    @Async
+    protected synchronized User updateLastIpAddress(User user, HttpServletRequest request) {
+        user.setLastIpAddress(AppUtil.getClientIpAddress(request));
+        return userService.save(user);
     }
 
 

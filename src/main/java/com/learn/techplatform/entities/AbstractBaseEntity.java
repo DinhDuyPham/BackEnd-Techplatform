@@ -32,9 +32,9 @@ public abstract class AbstractBaseEntity<ID extends Serializable> {
     @Column(name = "id", nullable = false, length = 32, updatable = false)
     private ID id;
 
-    @Column(name = "status", length = 50)
+    @Column(name = "system_status", length = 50)
     @Enumerated(EnumType.STRING)
-    private SystemStatus status;
+    private SystemStatus systemStatus;
 
     @CreatedDate
     @Column(name = "created_date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

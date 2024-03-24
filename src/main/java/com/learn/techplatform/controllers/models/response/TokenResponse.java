@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
-public class SignUpUserVerifyResponse {
+public class TokenResponse {
     private String token;
     private long expireTime;
 }

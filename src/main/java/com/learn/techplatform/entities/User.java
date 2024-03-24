@@ -71,10 +71,6 @@ public class User extends AbstractBaseEntity<String> implements Serializable {
     @Column(name = "profile_image", columnDefinition = "TEXT")
     private String profileImage;
 
-    @Column(name = "system_status", length = 50)
-    @Enumerated(EnumType.STRING)
-    private SystemStatus systemStatus;
-
     @Column(name = "user_status", length = 50)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;

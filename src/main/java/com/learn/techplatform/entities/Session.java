@@ -1,6 +1,7 @@
 package com.learn.techplatform.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.learn.techplatform.common.enums.SessionType;
 import com.learn.techplatform.common.enums.SystemStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,11 +26,14 @@ public class Session extends AbstractBaseEntity<String> implements Serializable 
     @Column(name = "data", columnDefinition = "TEXT")
     private String data;
 
+    @Column(name = "user_id", length = 50)
+    private String userId;
+
     @Column(name = "expire_time")
     private long expireTime;
 
-    @Column(name = "system_status", length = 50)
+    @Column(name = "session_type", length = 50)
     @Enumerated(EnumType.STRING)
-    private SystemStatus systemStatus;
+    private SessionType sessionType;
 
 }

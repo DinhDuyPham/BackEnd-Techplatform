@@ -29,7 +29,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String authToken = request.getHeader(Constant.HEADER_TOKEN);
         if (authToken != null) {
             try {
-                AuthUser authUser = authHelper.loadAuthUserFromToken(authToken);
+                AuthUser authUser = authHelper.loadAuthUserFromToken(authToken, request);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authUser, null, authUser.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

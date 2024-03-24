@@ -34,20 +34,20 @@ public class AuthenticationController extends AbstractBaseController {
     @PostMapping(ApiPath.LOGIN)
     @Operation(summary = "User Login")
     ResponseEntity<RestAPIResponse<Object>> signIn(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        return responseUtil.successResponse(authService.loginUser(loginRequest, appValueConfigure, request));
+        return responseUtil.successResponse(authService.loginUser(loginRequest, request));
     }
 
     @PostMapping(ApiPath.SIGN_UP)
     @Operation(summary = "User Confirm signup")
-    ResponseEntity<RestAPIResponse<Object>> signUp(@Valid @RequestBody  ConfirmSignUpRequest confirmSignUpRequest, HttpServletRequest request) {
-        return responseUtil.successResponse(authService.confirmSignUpUser(confirmSignUpRequest, appValueConfigure, request));
+    ResponseEntity<RestAPIResponse<Object>> signUp(@Valid @RequestBody ConfirmSignUpRequest confirmSignUpRequest, HttpServletRequest request) {
+        return responseUtil.successResponse(authService.confirmSignUpUser(confirmSignUpRequest, request));
     }
 
     @PostMapping(ApiPath.SIGNUP_VERIFY)
     @Operation(summary = "User verify signup")
     ResponseEntity<RestAPIResponse<Object>> signUpVerify(@Valid @RequestBody SignUpRequest signUpRequest, HttpServletRequest request) {
         UserDTO userDTO = new UserDTO(signUpRequest);
-        return responseUtil.successResponse(authService.signUpUserVerify(userDTO, appValueConfigure, request));
+        return responseUtil.successResponse(authService.signUpUserVerify(userDTO, request));
     }
 
     @GetMapping(ApiPath.AuthInFo)
@@ -62,4 +62,11 @@ public class AuthenticationController extends AbstractBaseController {
         authService.logout(auth.getId(), request);
         return responseUtil.successResponse("ok");
     }
+
+    @PutMapping(ApiPath.FORGOT_PASSWORD)
+    @Operation(summary = "Forgot password")
+    ResponseEntity<RestAPIResponse<Object>> forgotPassword(HttpServletRequest request) {
+        return responseUtil.successResponse("ok");
+    }
+
 }

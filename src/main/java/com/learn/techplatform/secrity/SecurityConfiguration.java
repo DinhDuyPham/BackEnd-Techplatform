@@ -78,6 +78,9 @@ public class SecurityConfiguration {
                             ApiPath.AUTHENTICATE_API + ApiPath.SIGNUP_VERIFY
                         )
                         .permitAll()
+                            .requestMatchers(HttpMethod.PUT,
+                        ApiPath.AUTHENTICATE_API + ApiPath.FORGOT_PASSWORD
+                            ).permitAll()
                         .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());

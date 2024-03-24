@@ -39,7 +39,7 @@ public class AuthorizeValidatorInterceptor {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String authToken = httpServletRequest.getHeader(Constant.HEADER_TOKEN);
         if (authToken == null) throw new ApplicationException(RestAPIStatus.UNAUTHORIZED);
-        AuthUser authUser = authHelper.loadAuthUserFromToken(authToken);
+        AuthUser authUser = authHelper.loadAuthUserFromToken(authToken, httpServletRequest);
         Validator.notNull(authUser, RestAPIStatus.UNAUTHORIZED, RestStatusMessage.UNAUTHORIZED);
         // Validate Role
         boolean isValid = isValidate(authUser, roles);
