@@ -79,7 +79,8 @@ public class SecurityConfiguration {
                         )
                         .permitAll()
                             .requestMatchers(HttpMethod.PUT,
-                        ApiPath.AUTHENTICATE_API + ApiPath.FORGOT_PASSWORD
+                                ApiPath.AUTHENTICATE_API + ApiPath.FORGOT_PASSWORD,
+                                ApiPath.AUTHENTICATE_API + ApiPath.RESET_PASSWORD
                             ).permitAll()
                         .anyRequest().authenticated()
             )

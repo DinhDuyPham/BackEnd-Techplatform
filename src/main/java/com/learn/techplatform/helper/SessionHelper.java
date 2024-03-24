@@ -7,6 +7,7 @@ import com.learn.techplatform.common.utils.AppValueConfigure;
 import com.learn.techplatform.common.utils.DateUtil;
 import com.learn.techplatform.common.utils.UniqueID;
 import com.learn.techplatform.entities.Session;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -49,5 +50,9 @@ public class SessionHelper {
 
     public Session createSessionAuth(String userId) {
         return this.createSession(userId, DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION);
+    }
+
+    public boolean isExpirySession(Session session) {
+        return DateUtil.isBeforeTime(DateUtil.getUTCNow().getTime(), session.getExpireTime());
     }
 }

@@ -3,6 +3,7 @@ package com.learn.techplatform.common.exceptions;
 import com.learn.techplatform.common.restfullApi.ResponseUtil;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
+import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -71,7 +72,8 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        return new ResponseEntity<Object>(new RestAPIResponse<>(RestAPIStatus.BAD_REQUEST, null), headers, status);
+        log.error("handleHttpMessageNotReadable", ex);
+        return new ResponseEntity<Object>(new RestAPIResponse<>(RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST), headers, status);
     }
 
     /**

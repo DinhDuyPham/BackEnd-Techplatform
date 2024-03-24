@@ -1,6 +1,5 @@
 package com.learn.techplatform.services.Authentication;
 
-import com.google.gson.Gson;
 import com.learn.techplatform.common.constants.Constant;
 import com.learn.techplatform.common.enums.SessionType;
 import com.learn.techplatform.common.enums.SystemStatus;
@@ -12,6 +11,7 @@ import com.learn.techplatform.common.validations.Validator;
 import com.learn.techplatform.controllers.models.request.ConfirmSignUpRequest;
 import com.learn.techplatform.controllers.models.request.EmailRequest;
 import com.learn.techplatform.controllers.models.request.LoginRequest;
+import com.learn.techplatform.controllers.models.request.ResetPasswordRequest;
 import com.learn.techplatform.controllers.models.response.AuthResponse;
 import com.learn.techplatform.controllers.models.response.TokenResponse;
 import com.learn.techplatform.dto_modals.UserDTO;
@@ -19,7 +19,6 @@ import com.learn.techplatform.entities.Session;
 import com.learn.techplatform.entities.User;
 import com.learn.techplatform.helper.SessionHelper;
 import com.learn.techplatform.helper.UserHelper;
-import com.learn.techplatform.models.Session.SignUpVerifySession;
 import com.learn.techplatform.repositories.SessionRepository;
 import com.learn.techplatform.repositories.UserRepository;
 import com.learn.techplatform.secrity.AuthHelper;
@@ -97,8 +96,7 @@ public class AuthServiceImpl implements AuthService {
             SessionType.VERIFY_SIGNUP
         );
         Validator.notNull(session, RestAPIStatus.NOT_FOUND, RestStatusMessage.SESSION_NOT_FOUND);
-        boolean tokenExpire = DateUtil.isBeforeTime(DateUtil.getUTCNow().getTime(), session.getExpireTime());
-        Validator.mustTrue(tokenExpire, RestAPIStatus.EXPIRED, RestStatusMessage.EXPIRED_VERIFY_TOKEN);
+        Validator.mustTrue(sessionHelper.isExpirySession(session), RestAPIStatus.EXPIRED, RestStatusMessage.EXPIRED_VERIFY_TOKEN);
 
         Validator.notNull(session.getData(), RestAPIStatus.NOT_FOUND, RestStatusMessage.SESSION_NOT_FOUND);
         User userSignUp = userService.getById(session.getUserId());
@@ -165,11 +163,53 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenResponse forgotPassword(EmailRequest emailRequest, AppValueConfigure appValueConfigure, HttpServletRequest request) {
         UserDTO user = userService.getUserByEmail(emailRequest.getEmail());
+        boolean isUserExist = user != null;
         Session session = sessionHelper.createSession(
-            user.getId(),
+            !isUserExist ? "" : user.getId(),
+            StringUtils.base64Encode(UniqueID.getRandomOTP()),
             DateUtil.getUTCNow().getTime() + DateUtil.FIVE_MINUTE,
             SessionType.FORGOT_PASSWORD
         );
-        return TokenResponse.builder().build();
+        if(isUserExist) {
+            sessionService.save(session);
+        }
+        return TokenResponse.builder()
+            .token(!isUserExist ? UniqueID.getUUID() : session.getId())
+            .expireTime(session.getExpireTime())
+            .build();
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest, HttpServletRequest request) {
+        Session session = sessionRepository.getByIdAndSystemStatusAndSessionType(
+            resetPasswordRequest.getToken(),
+            SystemStatus.ACTIVE,
+            SessionType.FORGOT_PASSWORD
+        );
+        Validator.notNull(session, RestAPIStatus.NOT_FOUND, RestStatusMessage.SESSION_NOT_FOUND);
+        Validator.mustTrue(sessionHelper.isExpirySession(session), RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST);
+        String otpDecode = StringUtils.decodeBase64(session.getData());
+        log.info("otpDecode "+ otpDecode);
+        Validator.mustEquals(otpDecode, resetPasswordRequest.getOtp(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST);
+        // Check password match
+        Validator.mustEquals(
+            resetPasswordRequest.getPassword(),
+            resetPasswordRequest.getConfirmPassword(),
+            RestAPIStatus.CONFLICT,
+            RestStatusMessage.CONFIRM_PASSWORD_DOES_NOT_MATCH
+        );
+
+        User user = userRepository.findByIdAndSystemStatusAndUserStatus(
+            session.getUserId(),
+            SystemStatus.ACTIVE,
+            UserStatus.ACTIVE
+        );
+        Validator.notNull(user, RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST);
+        user.setLastIpAddress(AppUtil.getClientIpAddress(request));
+        String resetPassword = authHelper.generatePasswordHash(resetPasswordRequest.getConfirmPassword(), user);
+        user.setPasswordHash(resetPassword);
+        userService.save(user);
+        session.setSystemStatus(SystemStatus.INACTIVE);
+        sessionService.save(session);
     }
 }

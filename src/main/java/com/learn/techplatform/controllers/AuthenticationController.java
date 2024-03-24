@@ -4,9 +4,7 @@ package com.learn.techplatform.controllers;
 import com.learn.techplatform.common.constants.ApiPath;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
 import com.learn.techplatform.common.utils.DateUtil;
-import com.learn.techplatform.controllers.models.request.ConfirmSignUpRequest;
-import com.learn.techplatform.controllers.models.request.LoginRequest;
-import com.learn.techplatform.controllers.models.request.SignUpRequest;
+import com.learn.techplatform.controllers.models.request.*;
 import com.learn.techplatform.dto_modals.UserDTO;
 import com.learn.techplatform.secrity.AuthSession;
 import com.learn.techplatform.secrity.AuthUser;
@@ -65,7 +63,14 @@ public class AuthenticationController extends AbstractBaseController {
 
     @PutMapping(ApiPath.FORGOT_PASSWORD)
     @Operation(summary = "Forgot password")
-    ResponseEntity<RestAPIResponse<Object>> forgotPassword(HttpServletRequest request) {
+    ResponseEntity<RestAPIResponse<Object>> forgotPassword(@Valid @RequestBody EmailRequest emailRequest, HttpServletRequest request) {
+        return responseUtil.successResponse(authService.forgotPassword(emailRequest, appValueConfigure, request));
+    }
+
+    @PutMapping(ApiPath.RESET_PASSWORD)
+    @Operation(summary = "Forgot password")
+    ResponseEntity<RestAPIResponse<Object>> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest, HttpServletRequest request) {
+        authService.resetPassword(resetPasswordRequest, request);
         return responseUtil.successResponse("ok");
     }
 
