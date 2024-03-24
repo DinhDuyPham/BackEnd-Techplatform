@@ -20,7 +20,9 @@ public enum RestAPIStatus {
     INVALID_FILE(410, "Invalid file"),
     INTERNAL_SERVER_ERROR(500, "Internal server error"),
     INVALID_VERIFIED_CODE(409, "Invalid verified code"),
+    INVALID_CREDENTIAL(401, "Lacking or incorrect credential"),
     MUlTIPLE_REQUEST_CODE(410, "You are request the authen code to fast");
+
 
 
     private final int code;

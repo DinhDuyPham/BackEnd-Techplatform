@@ -1,5 +1,6 @@
 package com.learn.techplatform.helper;
 
+import com.google.firebase.auth.UserRecord;
 import com.learn.techplatform.common.enums.SystemStatus;
 import com.learn.techplatform.common.enums.UserRole;
 import com.learn.techplatform.common.enums.UserStatus;
@@ -24,6 +25,19 @@ public class UserHelper {
                 .firstName(userDTO.getFirstName())
                 .lastName(userDTO.getLastName())
                 .username("user" + UniqueID.getUUID())
+                .build();
+    }
+
+    public User createUser(UserRecord userRecord) {
+        return User.builder()
+                .id(UniqueID.getUUID())
+                .userRole(UserRole.USER)
+                .systemStatus(SystemStatus.ACTIVE)
+                .firstName(userRecord.getDisplayName())
+                .is2Fa(false)
+                .email(userRecord.getEmail())
+                .profileImage(userRecord.getPhotoUrl())
+                .phoneNumber(userRecord.getPhoneNumber())
                 .build();
     }
 }

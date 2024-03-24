@@ -119,6 +119,13 @@
 			<artifactId>gson</artifactId>
 			<type>jar</type>
 		</dependency>
+
+		<!-- google firebase admin-->
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>6.11.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

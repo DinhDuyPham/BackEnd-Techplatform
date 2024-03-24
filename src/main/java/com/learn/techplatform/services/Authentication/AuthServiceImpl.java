@@ -1,5 +1,6 @@
 package com.learn.techplatform.services.Authentication;
 
+import com.google.firebase.auth.UserRecord;
 import com.learn.techplatform.common.constants.Constant;
 import com.learn.techplatform.common.enums.SessionType;
 import com.learn.techplatform.common.enums.SystemStatus;
@@ -8,15 +9,13 @@ import com.learn.techplatform.common.restfullApi.RestAPIStatus;
 import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import com.learn.techplatform.common.utils.*;
 import com.learn.techplatform.common.validations.Validator;
-import com.learn.techplatform.controllers.models.request.ConfirmSignUpRequest;
-import com.learn.techplatform.controllers.models.request.EmailRequest;
-import com.learn.techplatform.controllers.models.request.LoginRequest;
-import com.learn.techplatform.controllers.models.request.ResetPasswordRequest;
+import com.learn.techplatform.controllers.models.request.*;
 import com.learn.techplatform.controllers.models.response.AuthResponse;
 import com.learn.techplatform.controllers.models.response.TokenResponse;
 import com.learn.techplatform.dto_modals.UserDTO;
 import com.learn.techplatform.entities.Session;
 import com.learn.techplatform.entities.User;
+import com.learn.techplatform.firebase.FirebaseService;
 import com.learn.techplatform.helper.SessionHelper;
 import com.learn.techplatform.helper.UserHelper;
 import com.learn.techplatform.repositories.SessionRepository;
@@ -45,6 +44,8 @@ public class AuthServiceImpl implements AuthService {
     SessionRepository sessionRepository;
     @Autowired
     SessionService sessionService;
+    @Autowired
+    FirebaseService firebaseService;
 
     @Autowired
     UserHelper userHelper;
@@ -143,6 +144,22 @@ public class AuthServiceImpl implements AuthService {
             .accessToken(sessionAuth.getId())
             .expireTime(sessionAuth.getExpireTime())
             .build();
+    }
+
+    @Override
+    public AuthResponse googleLoginUser(GoogleLoginRequest loginRequest, HttpServletRequest request) {
+        UserRecord userRecord = firebaseService.getAuthGoogle(loginRequest.getToken());
+        Validator.notNull(userRecord, RestAPIStatus.INVALID_CREDENTIAL, RestStatusMessage.INVALID_AUTHENTICATE_CREDENTIAL);
+        User user = userRepository.findByEmailAndSystemStatusAndUserStatus(userRecord.getEmail(), SystemStatus.ACTIVE, UserStatus.ACTIVE);
+        if(user == null) {
+            user = userHelper.createUser(userRecord);
+        }
+        user = userService.save(user);
+        Session sessionAuth = sessionHelper.createSessionAuth(user.getId());
+        return AuthResponse.builder()
+                .accessToken(sessionAuth.getId())
+                .expireTime(sessionAuth.getExpireTime())
+                .build();
     }
 
     @Override

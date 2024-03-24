@@ -75,7 +75,8 @@ public class SecurityConfiguration {
                             HttpMethod.POST,
                             ApiPath.AUTHENTICATE_API + ApiPath.SIGN_UP,
                             ApiPath.AUTHENTICATE_API + ApiPath.LOGIN,
-                            ApiPath.AUTHENTICATE_API + ApiPath.SIGNUP_VERIFY
+                            ApiPath.AUTHENTICATE_API + ApiPath.SIGNUP_VERIFY,
+                            ApiPath.AUTHENTICATE_API + ApiPath.GOOGLE_LOGIN
                         )
                         .permitAll()
                             .requestMatchers(HttpMethod.PUT,

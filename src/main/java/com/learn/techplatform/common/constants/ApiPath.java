@@ -27,6 +27,7 @@ public interface ApiPath {
     String SIGN_UP = "/sign-up";
     String RESET_PASSWORD = "/reset-password";
     String AuthInFo = "/auth-info";
+    String GOOGLE_LOGIN = "/google";
     String CHECK_PHONE_NUMBER_SIGNUP = "/check-phone-signup";
     String VERIFY_EMAIL = "/verify-email";
     String EMAIL_SIGNUP = "/email-signup";
