@@ -35,5 +35,4 @@ public class Session extends AbstractBaseEntity<String> implements Serializable 
     @Column(name = "session_type", length = 50)
     @Enumerated(EnumType.STRING)
     private SessionType sessionType;
-
 }
