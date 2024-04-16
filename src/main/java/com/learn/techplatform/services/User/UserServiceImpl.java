@@ -20,6 +20,7 @@ public class UserServiceImpl extends AbstractBaseService<User, String> implement
         super(genericRepository);
     }
 
+
     @Override
     public UserDTO getUserByEmail(String email) {
         return userRepository.getUserByEmailAndStatus(email, SystemStatus.ACTIVE, UserStatus.ACTIVE);

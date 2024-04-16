@@ -8,6 +8,7 @@ public interface ApiPath {
     String PRODUCT_API = BASE_API_URL + "/product";
     String ROLE_API = BASE_API_URL + "/role";
     String OTP_API = BASE_API_URL + "/otp";
+    String COURSE_API = BASE_API_URL +  "/course";
 
 
     // common
@@ -34,4 +35,6 @@ public interface ApiPath {
     String SIGNUP_VERIFY = "/signup-verify";
     String FORGOT_PASSWORD = "/forgot-password";
     String REFRESH_TOKEN = "/refresh-token";
+
+
 }
