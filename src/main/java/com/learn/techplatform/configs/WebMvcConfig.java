@@ -1,7 +1,7 @@
 package com.learn.techplatform.configs;
 
 
-import com.learn.techplatform.secrity.AuthSessionResolver;
+import com.learn.techplatform.security.AuthSessionResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;

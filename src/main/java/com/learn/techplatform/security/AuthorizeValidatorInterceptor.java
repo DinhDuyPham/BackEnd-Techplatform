@@ -1,4 +1,4 @@
-package com.learn.techplatform.secrity;
+package com.learn.techplatform.security;
 
 
 import com.learn.techplatform.common.constants.Constant;
@@ -7,14 +7,11 @@ import com.learn.techplatform.common.exceptions.ApplicationException;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
 import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import com.learn.techplatform.common.validations.Validator;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -32,7 +29,7 @@ public class AuthorizeValidatorInterceptor {
 
     @Before(
             value =
-                    "@annotation(com.learn.techplatform.secrity.AuthorizeValidator)  && @annotation(roles)")
+                    "@annotation(com.learn.techplatform.security.AuthorizeValidator)  && @annotation(roles)")
     public void before(JoinPoint caller, AuthorizeValidator roles) {
         // Capture access token from current request
         HttpServletRequest httpServletRequest =

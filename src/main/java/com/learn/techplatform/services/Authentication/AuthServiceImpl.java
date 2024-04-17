@@ -20,7 +20,7 @@ import com.learn.techplatform.helper.SessionHelper;
 import com.learn.techplatform.helper.UserHelper;
 import com.learn.techplatform.repositories.SessionRepository;
 import com.learn.techplatform.repositories.UserRepository;
-import com.learn.techplatform.secrity.AuthHelper;
+import com.learn.techplatform.security.AuthHelper;
 import com.learn.techplatform.services.Session.SessionService;
 import com.learn.techplatform.services.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;

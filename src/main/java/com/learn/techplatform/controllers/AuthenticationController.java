@@ -3,11 +3,10 @@ package com.learn.techplatform.controllers;
 
 import com.learn.techplatform.common.constants.ApiPath;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
-import com.learn.techplatform.common.utils.DateUtil;
 import com.learn.techplatform.controllers.models.request.*;
 import com.learn.techplatform.dto_modals.UserDTO;
-import com.learn.techplatform.secrity.AuthSession;
-import com.learn.techplatform.secrity.AuthUser;
+import com.learn.techplatform.security.AuthSession;
+import com.learn.techplatform.security.AuthUser;
 import com.learn.techplatform.services.Authentication.AuthService;
 import com.learn.techplatform.services.User.UserService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -9,8 +9,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @ToString
@@ -21,20 +19,20 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "[lesson]")
-public class Blog extends AbstractBaseEntity<String> implements Serializable {
+@Table(name = "[lesson_question]")
+public class LessonQuestion extends AbstractBaseEntity<String> {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "question", columnDefinition = "TEXT")
+    private String question;
+
+    @Column(name = "content")
     private String content;
 
-    @Column(name = "viewed")
-    private int viewed;
+    @Column(name = "is_correct")
+    private boolean isCorrect;
 
-    @Column(name = "liked")
-    private int liked;
-
-    @Column(name = "user_id")
-    private String userId;
+    @Column(name = "lesson_id")
+    private String lessonId;
 }
