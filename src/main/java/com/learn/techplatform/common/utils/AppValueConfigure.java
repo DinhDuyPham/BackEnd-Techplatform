@@ -20,4 +20,19 @@ public class AppValueConfigure {
 
     @Value("${app.api.version}")
     public String APP_API_VERSION;
+
+    @Value("${cloudinary.cloud-name}")
+    public String cloudinaryCloudName;
+
+    @Value("${cloudinary.api-key}")
+    public String cloudinaryApiKey;
+
+    @Value("${cloudinary.api-secret}")
+    public String cloudinaryApiSecret;
+
+    @Value("${cloudinary.url}")
+    public String cloudinaryUrl;
+
+    @Value("${cloudinary.path-image-upload}")
+    public String cloudinaryPathImageUpload;
 }
