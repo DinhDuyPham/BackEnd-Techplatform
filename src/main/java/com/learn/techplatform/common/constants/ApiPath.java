@@ -9,6 +9,14 @@ public interface ApiPath {
     String ROLE_API = BASE_API_URL + "/role";
     String OTP_API = BASE_API_URL + "/otp";
     String COURSE_API = BASE_API_URL +  "/course";
+    String CHAPTER_API = BASE_API_URL +  "/chapter";
+    String LESSON_API = BASE_API_URL +  "/lesson";
+    String COURSE_HISTORY_API = BASE_API_URL +  "/course-history";
+    String ORDER_HISTORY_API = BASE_API_URL +  "/order-history";
+    String BLOG_API = BASE_API_URL +  "/blog";
+    String BLOG_BOOKMARK_API = BASE_API_URL +  "/blog-bookmark";
+    String NEWS_FEED_API = BASE_API_URL +  "/news-feed";
+    String COMMENT_API = BASE_API_URL +  "/comment";
 
 
     // common

@@ -1,6 +1,5 @@
 package com.learn.techplatform.entities;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.learn.techplatform.common.enums.*;
@@ -75,4 +74,9 @@ public class User extends AbstractBaseEntity<String> implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
+    @Column(name = "cover_image", columnDefinition = "TEXT")
+    private String coverImage;
+
+    @Column(name = "bio", columnDefinition = "TEXT")
+    private String bio;
 }
