@@ -1,4 +1,4 @@
-package com.learn.techplatform.security;
+package com.learn.techplatform.secrity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
