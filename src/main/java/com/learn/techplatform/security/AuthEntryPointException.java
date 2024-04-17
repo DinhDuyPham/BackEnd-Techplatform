@@ -1,4 +1,4 @@
-package com.learn.techplatform.secrity;
+package com.learn.techplatform.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

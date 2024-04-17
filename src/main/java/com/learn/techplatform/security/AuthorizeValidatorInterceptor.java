@@ -1,4 +1,4 @@
-package com.learn.techplatform.secrity;
+package com.learn.techplatform.security;
 
 
 import com.learn.techplatform.common.constants.Constant;
@@ -29,7 +29,7 @@ public class AuthorizeValidatorInterceptor {
 
     @Before(
             value =
-                    "@annotation(com.learn.techplatform.secrity.AuthorizeValidator)  && @annotation(roles)")
+                    "@annotation(com.learn.techplatform.security.AuthorizeValidator)  && @annotation(roles)")
     public void before(JoinPoint caller, AuthorizeValidator roles) {
         // Capture access token from current request
         HttpServletRequest httpServletRequest =
