@@ -13,8 +13,6 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-
-
     @Query(value = """
         SELECT NEW com.learn.techplatform.dto_modals.UserDTO(u)
         FROM User u
