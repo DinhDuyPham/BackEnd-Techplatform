@@ -43,9 +43,6 @@ public class Lesson extends AbstractBaseEntity<String> implements Serializable {
     @Column(name = "question", columnDefinition = "TEXT")
     private String question;
 
-    @Column(name = "answer", columnDefinition = "TEXT")
-    private String answer;
-
     @Column(name = "numerical_order")
     private int numericalOrder;
 

@@ -1,4 +1,4 @@
-package com.learn.techplatform.secrity;
+package com.learn.techplatform.security;
 
 
 import com.learn.techplatform.common.enums.SystemStatus;
@@ -14,13 +14,9 @@ import com.learn.techplatform.services.Session.SessionService;
 import com.learn.techplatform.services.User.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CompletableFuture;
 
 @Component
 @Slf4j
