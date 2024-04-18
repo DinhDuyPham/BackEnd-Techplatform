@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 public interface CourseRepository extends JpaRepository<Course, String> {
     Course findCourseByIdAndCourseType(String id, CourseType type);
     Course findCourseById(String id);
+    boolean existsByTitle(String title);
 }

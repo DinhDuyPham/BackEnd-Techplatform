@@ -5,5 +5,7 @@ import com.learn.techplatform.entities.Course;
 import com.learn.techplatform.services.InterfaceBaseService;
 
 public interface CourseService  extends InterfaceBaseService<Course, String> {
-    void editCourse(CourseDTO courseDTO);
+    void createCourse(CourseDTO courseDTO);
+    void editCourse(String id, CourseDTO courseDTO);
+    void deleteCourse(String id);
 }

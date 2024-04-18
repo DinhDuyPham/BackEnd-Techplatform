@@ -290,6 +290,22 @@ public class Validator {
         }
     }
 
+    /**
+     * Validate numbers have to equal a given number
+     *
+     * @param baseNumber
+     * @param restAPIStatus
+     * @param restStatusMessage
+     * @param numbers
+     */
+    public static void mustEqual(float baseNumber, RestAPIStatus restAPIStatus, RestStatusMessage restStatusMessage, float... numbers) {
+        for (float i : numbers) {
+            if (i > baseNumber || i < baseNumber) {
+                throw new ApplicationException(restAPIStatus, restStatusMessage);
+            }
+        }
+    }
+
     public static void mustTrue(boolean bool,  RestAPIStatus restAPIStatus, RestStatusMessage restStatusMessage)  {
         if(!bool) {
             throw new ApplicationException(restAPIStatus, restStatusMessage);
