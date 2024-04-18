@@ -73,7 +73,7 @@ public class UserServiceImpl extends AbstractBaseService<User, String> implement
         else {
             boolean isNotGenderValid = Validator.checkEmptyString(editUserRequest.getGender());
             Validator.mustTrue(!isNotGenderValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_GENDER_FORMAT);
-            user.setGender(GenderType.valueOf(editUserRequest.getGender()));
+            user.setGender(GenderType.valueOf(editUserRequest.getGender().toUpperCase()));
         }
 
         if (editUserRequest.getBio() != null) {

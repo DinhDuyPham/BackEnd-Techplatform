@@ -27,7 +27,7 @@ public class UserController extends AbstractBaseController {
         return this.responseUtil.successResponse("hello");
     }
 
-    @PostMapping
+    @PostMapping(ApiPath.ADD)
     @Operation(summary = "Register user")
     ResponseEntity<RestAPIResponse<Object>> signUpUser() {
         return responseUtil.successResponse("OK!");

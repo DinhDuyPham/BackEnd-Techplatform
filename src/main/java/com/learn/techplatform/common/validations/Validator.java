@@ -296,13 +296,6 @@ public class Validator {
         }
     }
 
-    public static void mustTrue(boolean bool,  RestAPIStatus restAPIStatus, String message) {
-        if(!bool) {
-            throw new ApplicationException(restAPIStatus, message);
-        }
-    }
-
-
     // format email
     public static void validateEmail(String emailAddress) {
         boolean isEmailFormat = isEmailFormat(emailAddress);
