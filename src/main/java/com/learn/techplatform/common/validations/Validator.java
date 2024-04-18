@@ -165,6 +165,20 @@ public class Validator {
         }
     }
 
+    /**
+     * Validate object not null & not empty
+     *
+     * @param obj
+     * @param RestStatusMessage
+     */
+
+    public static void notNullAndNotEmpty(Object obj, RestAPIStatus RestAPIStatus, RestStatusMessage RestStatusMessage) {
+
+        if (obj == null || "".equals(obj)) {
+            throw new ApplicationException(RestAPIStatus, RestStatusMessage);
+        }
+    }
+
 
     /**
      * Validate list object must null & must empty

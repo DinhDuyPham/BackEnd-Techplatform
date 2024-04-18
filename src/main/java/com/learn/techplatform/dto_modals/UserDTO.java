@@ -27,11 +27,13 @@ public class UserDTO  {
     private String lastName;
     private String email;
     private String phoneNumber;
+    private String bio;
     @JsonIgnore
     private String passwordHash;
     private String passcode;
     private String username;
     private String profileImage;
+    private String coverImage;
     private UserStatus userStatus;
     private SystemStatus systemStatus;
     private String lastIpAddress;
@@ -61,6 +63,8 @@ public class UserDTO  {
         this.lastLogin = user.getLastLogin();
         this.systemStatus = user.getSystemStatus();
         this.userRole = user.getUserRole();
+        this.bio = user.getBio();
+        this.coverImage = user.getCoverImage();
     }
 
 }
