@@ -32,18 +32,16 @@ public class BlogServiceImpl extends AbstractBaseService<Blog, String> implement
         Validator.notNullAndNotEmpty(blogDTO.getTitle(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_TITLE_FORMAT);
         Validator.notNullAndNotEmpty(blogDTO.getContent(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_CONTENT_FORMAT);
 
-        // Tạo đối tượng khóa học từ dữ liệu DTO
+
         Blog blog = Blog.builder()
-                .id(UniqueID.generateKey(32)) // Tạo id mới cho khóa học
+                .id(UniqueID.getUUID())
                 .title(blogDTO.getTitle())
                 .content(blogDTO.getContent())
-                .liked(0) // Không có like ban đầu
-                .viewed(0) // Không có lượt xem ban đầu
-                .userId(userId) // tạo userID
+                .liked(0)
+                .viewed(0)
+                .userId(userId)
                 .systemStatus(SystemStatus.ACTIVE)
                 .build();
-
-        // Lưu Blog mới vào cơ sở dữ liệu
         this.save(blog);
     }
 }
