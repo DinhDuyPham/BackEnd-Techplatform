@@ -15,4 +15,9 @@ public class BlogServiceImpl extends AbstractBaseService<Blog, String> implement
     public BlogServiceImpl(JpaRepository<Blog, String> genericRepository) {
         super(genericRepository);
     }
+
+    @Override
+    public void deleteBlog(String id) {
+
+    }
 }

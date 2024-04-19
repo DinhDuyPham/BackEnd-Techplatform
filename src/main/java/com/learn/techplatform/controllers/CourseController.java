@@ -1,8 +1,10 @@
 package com.learn.techplatform.controllers;
 
 import com.learn.techplatform.common.constants.ApiPath;
+import com.learn.techplatform.common.enums.CourseType;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
 import com.learn.techplatform.dto_modals.CourseDTO;
+import com.learn.techplatform.repositories.CourseRepository;
 import com.learn.techplatform.services.Course.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
