@@ -37,7 +37,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
         Validator.notNullAndNotEmpty(courseDTO.getContent(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_DESCRIPTION_FORMAT);
 
         Course course = Course.builder()
-                .id(UniqueID.generateKey(32))
+                .id(UniqueID.getUUID())
                 .title(courseDTO.getTitle())
                 .description(courseDTO.getDescription())
                 .price(courseDTO.getPrice())
@@ -55,7 +55,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
 
     @Override
     public void editCourse(String id, CourseDTO courseDTO) {
-        Course course = courseRepository.findCourseById(id);
+        Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
 
         this.save(course);
@@ -63,7 +63,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
 
     @Override
     public void deleteCourse(String id) {
-        Course course = courseRepository.findCourseById(id);
+        Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
         course.setSystemStatus(SystemStatus.INACTIVE);
         this.save(course);
