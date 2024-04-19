@@ -21,7 +21,7 @@ public class CourseController extends AbstractBaseController {
     CourseService courseService;
 
     @GetMapping(ApiPath.GET_PAGE)
-    public ResponseEntity getPageAddress(@RequestParam(name = "page_number", defaultValue = "1", required = false) int pageNumber,
+    public ResponseEntity getPageCourse(@RequestParam(name = "page_number", defaultValue = "1", required = false) int pageNumber,
                                          @RequestParam(name = "page_size", defaultValue = "10", required = false) int pageSize,
                                          @RequestParam(name = "sort_type", defaultValue = "ASC", required = false) Sort.Direction sortType,
                                          @RequestParam(name = "sort_type_date", defaultValue = "ASC", required = false) Sort.Direction sortTypeDate,
