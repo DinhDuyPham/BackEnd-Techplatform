@@ -61,6 +61,9 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
 
     @Override
     public void deleteCourse(String id) {
+        Course course = courseRepository.findCourseById(id);
+        Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
 
+        this.delete(course);
     }
 }
