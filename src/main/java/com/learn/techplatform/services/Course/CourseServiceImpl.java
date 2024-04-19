@@ -1,5 +1,6 @@
 package com.learn.techplatform.services.Course;
 
+import com.learn.techplatform.common.enums.CourseType;
 import com.learn.techplatform.common.enums.GenderType;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
 import com.learn.techplatform.common.restfullApi.RestStatusMessage;
@@ -41,6 +42,10 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
                 .price(courseDTO.getPrice())
                 .content(courseDTO.getContent())
                 .slug(StringUtils.slugify(courseDTO.getTitle()))
+                .courseType(CourseType.NONE)
+                .thumbnailUrl(null)
+                .discount(0)
+                .viewed(0)
                 .build();
 
         this.save(course);
