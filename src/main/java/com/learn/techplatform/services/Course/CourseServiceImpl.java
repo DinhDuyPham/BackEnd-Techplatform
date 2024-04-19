@@ -2,6 +2,7 @@ package com.learn.techplatform.services.Course;
 
 import com.learn.techplatform.common.enums.CourseType;
 import com.learn.techplatform.common.enums.GenderType;
+import com.learn.techplatform.common.enums.SystemStatus;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
 import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import com.learn.techplatform.common.utils.DateUtil;
@@ -46,6 +47,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
                 .thumbnailUrl(null)
                 .discount(0)
                 .viewed(0)
+                .systemStatus(SystemStatus.ACTIVE)
                 .build();
 
         this.save(course);
@@ -63,7 +65,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
     public void deleteCourse(String id) {
         Course course = courseRepository.findCourseById(id);
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
-
-        this.delete(course);
+        course.setSystemStatus(SystemStatus.INACTIVE);
+        this.save(course);
     }
 }
