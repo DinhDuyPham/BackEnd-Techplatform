@@ -294,15 +294,13 @@ public class Validator {
      * Validate numbers have to equal a given number
      *
      * @param baseNumber
+     * @param currentNumber
      * @param restAPIStatus
      * @param restStatusMessage
-     * @param numbers
      */
-    public static void mustInRange(float baseNumber, RestAPIStatus restAPIStatus, RestStatusMessage restStatusMessage, float... numbers) {
-        for (float i : numbers) {
-            if (i > baseNumber || i < baseNumber) {
-                throw new ApplicationException(restAPIStatus, restStatusMessage);
-            }
+    public static void mustInRange(float baseNumber, float currentNumber, RestAPIStatus restAPIStatus, RestStatusMessage restStatusMessage) {
+        if (currentNumber > baseNumber || currentNumber < baseNumber) {
+            throw new ApplicationException(restAPIStatus, restStatusMessage);
         }
     }
 
