@@ -298,7 +298,7 @@ public class Validator {
      * @param restStatusMessage
      * @param numbers
      */
-    public static void mustEqual(float baseNumber, RestAPIStatus restAPIStatus, RestStatusMessage restStatusMessage, float... numbers) {
+    public static void mustInRange(float baseNumber, RestAPIStatus restAPIStatus, RestStatusMessage restStatusMessage, float... numbers) {
         for (float i : numbers) {
             if (i > baseNumber || i < baseNumber) {
                 throw new ApplicationException(restAPIStatus, restStatusMessage);
