@@ -11,10 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -29,4 +26,19 @@ public class BlogController extends AbstractBaseController{
         blogService.createBlog(blogDTO, user.getId());
         return responseUtil.successResponse("OK!");
     }
+
+    @DeleteMapping(ApiPath.DELETE + ApiPath.ID)
+    @Operation(summary = "Delete blog")
+    ResponseEntity<RestAPIResponse<Object>> deleteBlog(@PathVariable("id") String id) {
+        blogService.deleteBlog(id);
+        return responseUtil.successResponse("OK!");
+    }
+    @PutMapping(ApiPath.EDIT + ApiPath.ID)
+    @Operation(summary = "Update blog")
+    ResponseEntity<RestAPIResponse<Object>> editBlog(@PathVariable("id") String id,@RequestBody BlogDTO blogDTO, @Parameter(hidden = true) @AuthSession() AuthUser user) {
+        blogService.editBlog(id,blogDTO);
+        return responseUtil.successResponse("OK!");
+    }
 }
+
+
