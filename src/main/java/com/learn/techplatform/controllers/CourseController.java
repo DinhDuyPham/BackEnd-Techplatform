@@ -20,8 +20,23 @@ public class CourseController extends AbstractBaseController {
     @Autowired
     CourseService courseService;
 
+    @GetMapping
+    @Operation(summary = "Get All Course")
+    ResponseEntity<RestAPIResponse<Object>> getAllCourse()
+    {
+        return responseUtil.successResponse(courseService.getAll());
+    }
+
+    @GetMapping(ApiPath.ID)
+    @Operation(summary = "Get Course By ID")
+    ResponseEntity<RestAPIResponse<Object>> getCourseById(@PathVariable("id") String id)
+    {
+        return responseUtil.successResponse(courseService.getById(id));
+    }
+
     @GetMapping(ApiPath.GET_PAGE)
-    public ResponseEntity getPageCourse(@RequestParam(name = "page_number", defaultValue = "1", required = false) int pageNumber,
+    @Operation(summary = "Get Course Pagination")
+    ResponseEntity<RestAPIResponse<Object>> getPageCourse(@RequestParam(name = "page_number", defaultValue = "1", required = false) int pageNumber,
                                          @RequestParam(name = "page_size", defaultValue = "10", required = false) int pageSize,
                                          @RequestParam(name = "sort_type", defaultValue = "ASC", required = false) Sort.Direction sortType,
                                          @RequestParam(name = "sort_type_date", defaultValue = "ASC", required = false) Sort.Direction sortTypeDate,
@@ -34,6 +49,13 @@ public class CourseController extends AbstractBaseController {
     @Operation(summary = "Create new course")
     ResponseEntity<RestAPIResponse<Object>> createCourse(@RequestBody CourseDTO courseDTO) {
         courseService.createCourse(courseDTO);
+        return responseUtil.successResponse("OK!");
+    }
+
+    @PutMapping(ApiPath.EDIT + ApiPath.ID)
+    @Operation(summary = "Edit course")
+    ResponseEntity<RestAPIResponse<Object>> editCourse(@PathVariable("id") String id, @RequestBody CourseDTO courseDTO) {
+        courseService.editCourse(id, courseDTO);
         return responseUtil.successResponse("OK!");
     }
 

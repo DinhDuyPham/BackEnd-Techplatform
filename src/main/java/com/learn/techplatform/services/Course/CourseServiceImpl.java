@@ -76,6 +76,51 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
         Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
 
+        if (courseDTO.getTitle() != null) {
+            boolean isTitleValid = Validator.checkNotNullAndNotEmptyString(courseDTO.getTitle());
+            Validator.mustTrue(isTitleValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_TITLE_FORMAT);
+            course.setTitle(courseDTO.getTitle());
+            course.setSlug(StringUtils.slugify(courseDTO.getTitle()));
+        }
+
+        if (courseDTO.getThumbnailUrl() != null) {
+            boolean isThumbnailUrlValid = Validator.checkNotNullAndNotEmptyString(courseDTO.getThumbnailUrl());
+            Validator.mustTrue(isThumbnailUrlValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_UPLOAD_IMAGE);
+            course.setThumbnailUrl(courseDTO.getThumbnailUrl());
+        }
+
+        if (courseDTO.getDescription() != null) {
+            boolean isDescriptionValid = Validator.checkNotNullAndNotEmptyString(courseDTO.getDescription());
+            Validator.mustTrue(isDescriptionValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_DESCRIPTION_FORMAT);
+            course.setDescription(courseDTO.getDescription());
+        }
+
+        if (!Validator.checkNull(courseDTO.getPrice())) {
+            boolean isPriceValid = Validator.checkNotNull(courseDTO.getPrice());
+            Validator.mustTrue(isPriceValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_PRICE_FORMAT);
+            course.setPrice(courseDTO.getPrice());
+        }
+
+        if (courseDTO.getContent() != null) {
+            boolean isContentValid = Validator.checkNotNullAndNotEmptyString(courseDTO.getContent());
+            Validator.mustTrue(isContentValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_CONTENT_FORMAT);
+            course.setContent(courseDTO.getContent());
+        }
+
+        if (!Validator.checkNull(courseDTO.getDiscount())) {
+            boolean isDiscountValid = Validator.checkNotNull(courseDTO.getDiscount());
+            Validator.mustTrue(isDiscountValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_DISCOUNT_FORMAT);
+            course.setDiscount(courseDTO.getDiscount());
+        }
+
+        if (Validator.checkNull(courseDTO.getCourseType()))
+            course.setCourseType(null);
+        else {
+            boolean isCourseTypeValid = Validator.checkNotNullAndNotEmptyString(courseDTO.getCourseType());
+            Validator.mustTrue(isCourseTypeValid, RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_COURSE_TYPE_FORMAT);
+            course.setCourseType(courseDTO.getCourseType());
+        }
+
         this.save(course);
     }
 
