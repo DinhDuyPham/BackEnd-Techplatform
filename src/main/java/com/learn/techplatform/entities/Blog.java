@@ -21,8 +21,11 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "[lesson]")
+@Table(name = "[blog]")
 public class Blog extends AbstractBaseEntity<String> implements Serializable {
+    @Column(name = "user_id")
+    private String userId;
+
     @Column(name = "title")
     private String title;
 
@@ -35,6 +38,5 @@ public class Blog extends AbstractBaseEntity<String> implements Serializable {
     @Column(name = "liked")
     private int liked;
 
-    @Column(name = "user_id")
-    private String userId;
+
 }
