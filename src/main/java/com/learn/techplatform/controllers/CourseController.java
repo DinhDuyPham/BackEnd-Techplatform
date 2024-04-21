@@ -1,12 +1,12 @@
 package com.learn.techplatform.controllers;
 
 import com.learn.techplatform.common.constants.ApiPath;
-import com.learn.techplatform.common.enums.CourseType;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
+import com.learn.techplatform.controllers.models.request.EditCourseRequest;
 import com.learn.techplatform.dto_modals.CourseDTO;
-import com.learn.techplatform.repositories.CourseRepository;
 import com.learn.techplatform.services.Course.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -47,14 +47,16 @@ public class CourseController extends AbstractBaseController {
 
     @PostMapping(ApiPath.ADD)
     @Operation(summary = "Create new course")
-    ResponseEntity<RestAPIResponse<Object>> createCourse(@RequestBody CourseDTO courseDTO) {
+    ResponseEntity<RestAPIResponse<Object>> createCourse(@RequestBody @Valid EditCourseRequest editCourseRequest) {
+        CourseDTO courseDTO = new CourseDTO(editCourseRequest);
         courseService.createCourse(courseDTO);
         return responseUtil.successResponse("OK!");
     }
 
     @PutMapping(ApiPath.EDIT + ApiPath.ID)
     @Operation(summary = "Edit course")
-    ResponseEntity<RestAPIResponse<Object>> editCourse(@PathVariable("id") String id, @RequestBody CourseDTO courseDTO) {
+    ResponseEntity<RestAPIResponse<Object>> editCourse(@PathVariable("id") String id, @RequestBody @Valid EditCourseRequest editCourseRequest) {
+        CourseDTO courseDTO = new CourseDTO(editCourseRequest);
         courseService.editCourse(id, courseDTO);
         return responseUtil.successResponse("OK!");
     }

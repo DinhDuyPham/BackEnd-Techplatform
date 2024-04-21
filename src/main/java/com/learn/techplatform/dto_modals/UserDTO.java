@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.learn.techplatform.common.enums.GenderType;
 import com.learn.techplatform.common.enums.SystemStatus;
 import com.learn.techplatform.common.enums.UserRole;
 import com.learn.techplatform.common.enums.UserStatus;
+import com.learn.techplatform.controllers.models.request.EditUserRequest;
 import com.learn.techplatform.controllers.models.request.SignUpRequest;
 import com.learn.techplatform.entities.User;
 import lombok.Getter;
@@ -23,11 +25,13 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
 public class UserDTO  {
     private String id;
+
     private String firstName;
     private String lastName;
     private String email;
     private String phoneNumber;
     private String bio;
+    private GenderType gender;
     @JsonIgnore
     private String passwordHash;
     private String passcode;
@@ -46,6 +50,18 @@ public class UserDTO  {
         this.firstName = signUpRequest.getFirstName();
         this.lastName = signUpRequest.getLastName();
         this.passwordHash = signUpRequest.getPasswordHash();
+    }
+
+    public UserDTO(EditUserRequest editUserRequest) {
+        this.firstName = editUserRequest.getFirstName();
+        this.lastName = editUserRequest.getLastName();
+        this.email = editUserRequest.getEmail();
+        this.gender = GenderType.valueOf(editUserRequest.getGender());
+        this.phoneNumber = editUserRequest.getPhoneNumber();
+        this.dateOfBirth = Long.valueOf(editUserRequest.getDateOfBirth());
+        this.bio = editUserRequest.getBio();
+        this.profileImage = editUserRequest.getProfileImage();
+        this.coverImage = editUserRequest.getCoverImage();
     }
 
     public UserDTO(User user) {

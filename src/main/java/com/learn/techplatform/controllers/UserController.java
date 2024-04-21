@@ -36,7 +36,8 @@ public class UserController extends AbstractBaseController {
     @PutMapping(ApiPath.EDIT)
     @Operation(summary = "Edit user information")
     ResponseEntity<RestAPIResponse<Object>> editUserInfo(@Parameter(hidden = true) @AuthSession() AuthUser user, @RequestBody @Valid EditUserRequest editUserRequest) {
-        userService.editUserInfo(user.getId(), editUserRequest);
+        UserDTO userDTO = new UserDTO(editUserRequest);
+        userService.editUserInfo(user.getId(), userDTO);
         return responseUtil.successResponse("OK!");
     }
 

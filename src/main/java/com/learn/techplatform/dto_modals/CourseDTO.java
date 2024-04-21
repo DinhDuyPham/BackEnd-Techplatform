@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.learn.techplatform.common.enums.CourseType;
+import com.learn.techplatform.controllers.models.request.EditCourseRequest;
 import com.learn.techplatform.entities.Course;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,5 +38,15 @@ public class CourseDTO {
         this.content = course.getContent();
         this.courseType = course.getCourseType();
         this.discount = course.getDiscount();
+    }
+
+    public CourseDTO(EditCourseRequest editCourseRequest) {
+        this.title = editCourseRequest.getTitle();
+        this.thumbnailUrl = editCourseRequest.getThumbnailUrl();
+        this.description = editCourseRequest.getDescription();
+        this.price = editCourseRequest.getPrice();
+        this.content = editCourseRequest.getContent();
+        this.courseType = editCourseRequest.getCourseType();
+        this.discount = editCourseRequest.getDiscount();
     }
 }
