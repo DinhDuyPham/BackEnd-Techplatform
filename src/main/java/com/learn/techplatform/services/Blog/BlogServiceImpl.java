@@ -32,10 +32,8 @@ public class BlogServiceImpl extends AbstractBaseService<Blog, String> implement
     public void createBlog(BlogDTO blogDTO, String userId) {
         boolean existsByTitle = blogRepository.existsByTitle(blogDTO.getTitle());
         Validator.mustTrue(!existsByTitle,RestAPIStatus.EXISTED, RestStatusMessage.BLOG_ALREADY_EXISTED);
-
         Validator.notNullAndNotEmpty(blogDTO.getTitle(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_TITLE_FORMAT);
         Validator.notNullAndNotEmpty(blogDTO.getContent(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_CONTENT_FORMAT);
-
 
         Blog blog = Blog.builder()
                 .id(UniqueID.getUUID())
