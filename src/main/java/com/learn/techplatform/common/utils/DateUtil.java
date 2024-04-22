@@ -3,6 +3,7 @@ package com.learn.techplatform.common.utils;
 import com.learn.techplatform.common.constants.Constant;
 import com.learn.techplatform.common.exceptions.ApplicationException;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
+import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import org.joda.time.DateTimeZone;
 
 import java.text.DateFormat;
@@ -577,7 +578,7 @@ public class DateUtil {
         try {
             date = formatter.parse(dateString);
         } catch (Exception e) {
-            throw new ApplicationException(RestAPIStatus.BAD_REQUEST, "Date Format must be " + dateAPIFormat.toPattern());
+            throw new ApplicationException(RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_DATE_FORMAT);
         }
         return date.getTime();
     }
