@@ -44,5 +44,6 @@ public interface ApiPath {
     String FORGOT_PASSWORD = "/forgot-password";
     String REFRESH_TOKEN = "/refresh-token";
 
-
+    // USER ROLE API
+    String ADMIN = "/admin";
 }
