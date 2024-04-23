@@ -76,6 +76,31 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
         Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
 
+        boolean isTitleExist = courseRepository.existsByTitle(courseDTO.getTitle());
+        Validator.mustTrue(!isTitleExist, RestAPIStatus.EXISTED, RestStatusMessage.COURSE_ALREADY_EXISTED);
+        course.setTitle(courseDTO.getTitle());
+        course.setSlug(StringUtils.slugify(courseDTO.getTitle()));
+
+        course.setThumbnailUrl(courseDTO.getThumbnailUrl());
+
+        course.setDescription(courseDTO.getDescription());
+        if (Validator.checkNull(courseDTO.getDescription()))
+            course.setDescription(course.getDescription());
+
+        course.setPrice(courseDTO.getPrice());
+
+        course.setContent(courseDTO.getContent());
+        if (Validator.checkNull(courseDTO.getContent()))
+            course.setContent(course.getContent());
+
+        course.setCourseType(courseDTO.getCourseType());
+        if (Validator.checkNull(courseDTO.getCourseType()))
+            course.setCourseType(course.getCourseType());
+
+        course.setDiscount(courseDTO.getDiscount());
+        if (Validator.checkNull(courseDTO.getDiscount()))
+            course.setDiscount(course.getDiscount());
+
         this.save(course);
     }
 

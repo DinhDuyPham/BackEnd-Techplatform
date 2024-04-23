@@ -3,6 +3,7 @@ package com.learn.techplatform.common.utils;
 import com.learn.techplatform.common.constants.Constant;
 import com.learn.techplatform.common.exceptions.ApplicationException;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
+import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import org.joda.time.DateTimeZone;
 
 import java.text.DateFormat;
@@ -26,6 +27,7 @@ public class DateUtil {
     public static final long MAX_DATE = 253402189200000L;
     private static TimeZone _tz = TimeZone.getTimeZone("UTC");
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.DATE_FORMAT);
+    private static final SimpleDateFormat dateAPIFormat = new SimpleDateFormat(Constant.API_FORMAT_DATE_YEAR);
     private static final SimpleDateFormat transactionDateFormat = new SimpleDateFormat(Constant.API_FORMAT_DATE);
 
 
@@ -576,7 +578,7 @@ public class DateUtil {
         try {
             date = formatter.parse(dateString);
         } catch (Exception e) {
-            throw new ApplicationException(RestAPIStatus.BAD_REQUEST, "Date Format must be " + dateFormat.toPattern());
+            throw new ApplicationException(RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_DATE_FORMAT);
         }
         return date.getTime();
     }

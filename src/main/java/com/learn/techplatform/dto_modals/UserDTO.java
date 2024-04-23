@@ -9,6 +9,7 @@ import com.learn.techplatform.common.enums.GenderType;
 import com.learn.techplatform.common.enums.SystemStatus;
 import com.learn.techplatform.common.enums.UserRole;
 import com.learn.techplatform.common.enums.UserStatus;
+import com.learn.techplatform.common.utils.DateUtil;
 import com.learn.techplatform.controllers.models.request.EditUserRequest;
 import com.learn.techplatform.controllers.models.request.SignUpRequest;
 import com.learn.techplatform.entities.User;
@@ -55,10 +56,9 @@ public class UserDTO  {
     public UserDTO(EditUserRequest editUserRequest) {
         this.firstName = editUserRequest.getFirstName();
         this.lastName = editUserRequest.getLastName();
-        this.email = editUserRequest.getEmail();
         this.gender = GenderType.valueOf(editUserRequest.getGender());
         this.phoneNumber = editUserRequest.getPhoneNumber();
-        this.dateOfBirth = Long.valueOf(editUserRequest.getDateOfBirth());
+        this.dateOfBirth = DateUtil.convertStringDateToLong(editUserRequest.getDateOfBirth());
         this.bio = editUserRequest.getBio();
         this.profileImage = editUserRequest.getProfileImage();
         this.coverImage = editUserRequest.getCoverImage();

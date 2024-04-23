@@ -41,6 +41,29 @@ public class UserServiceImpl extends AbstractBaseService<User, String> implement
         User user = userRepository.findByIdAndSystemStatusAndUserStatus(id, SystemStatus.ACTIVE, UserStatus.ACTIVE);
         Validator.notNull(user, RestAPIStatus.NOT_FOUND, RestStatusMessage.USER_NOT_FOUND);
 
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+
+        user.setGender(userDTO.getGender());
+
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        if (Validator.checkNull(userDTO.getPhoneNumber()))
+            user.setPhoneNumber(user.getPhoneNumber());
+
+        user.setDateOfBirth(userDTO.getDateOfBirth());
+
+        user.setBio(userDTO.getBio());
+        if (Validator.checkNull(userDTO.getBio()))
+            user.setBio(user.getBio());
+
+        user.setProfileImage(userDTO.getProfileImage());
+        if (Validator.checkNull(userDTO.getProfileImage()))
+            user.setProfileImage(user.getProfileImage());
+
+        user.setCoverImage(userDTO.getCoverImage());
+        if (Validator.checkNull(userDTO.getCoverImage()))
+            user.setCoverImage(user.getCoverImage());
+
         this.save(user);
     }
 

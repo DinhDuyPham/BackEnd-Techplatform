@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.learn.techplatform.common.constants.Constant;
 import com.learn.techplatform.common.utils.ParamError;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -23,17 +24,15 @@ public class EditUserRequest {
     private String lastName;
 
     @NotBlank(message = ParamError.FIELD_NAME)
-    @Pattern(regexp = Constant.EMAIL_REGEX, message = ParamError.PATTERN)
-    @Size(max = 120, message = ParamError.MAX_LENGTH)
-    private String email;
-
+    @Size(max = 5, message = ParamError.MAX_LENGTH)
     private String gender;
 
-    @NotBlank(message = ParamError.FIELD_NAME)
     @Pattern(regexp = Constant.PHONE_NUMBER_REGEX, message = ParamError.PATTERN)
-    @Size(max = 120, message = ParamError.MAX_LENGTH)
+    @Size(max = 15, message = ParamError.MAX_LENGTH)
     private String phoneNumber;
 
+    @NotBlank(message = ParamError.FIELD_NAME)
+    @Size(max = 10, message = ParamError.MAX_LENGTH)
     private String dateOfBirth;
 
     private String bio;

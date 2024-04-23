@@ -23,8 +23,9 @@ public class UserController extends AbstractBaseController {
     UserService userService;
 
     @GetMapping
-    ResponseEntity<RestAPIResponse<Object>> getUser() {
-        return this.responseUtil.successResponse("hello");
+    @Operation(summary = "Get all user")
+    ResponseEntity<RestAPIResponse<Object>> getAllUser() {
+        return this.responseUtil.successResponse(userService.getAll());
     }
 
     @PostMapping(ApiPath.ADD)
