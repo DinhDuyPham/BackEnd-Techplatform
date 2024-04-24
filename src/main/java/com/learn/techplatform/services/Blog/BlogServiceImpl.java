@@ -5,8 +5,11 @@ import com.learn.techplatform.common.restfullApi.RestAPIStatus;
 import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import com.learn.techplatform.common.utils.StringUtils;
 import com.learn.techplatform.common.utils.UniqueID;
+import com.learn.techplatform.controllers.models.request.EditBlogRequest;
 import com.learn.techplatform.dto_modals.BlogDTO;
+import com.learn.techplatform.dto_modals.CourseDTO;
 import com.learn.techplatform.entities.Blog;
+import com.learn.techplatform.entities.Course;
 import com.learn.techplatform.repositories.BlogRepository;
 import com.learn.techplatform.services.AbstractBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import com.learn.techplatform.common.validations.Validator;
 import com.learn.techplatform.repositories.BlogRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,10 +33,8 @@ public class BlogServiceImpl extends AbstractBaseService<Blog, String> implement
     public void createBlog(BlogDTO blogDTO, String userId) {
         boolean existsByTitle = blogRepository.existsByTitle(blogDTO.getTitle());
         Validator.mustTrue(!existsByTitle,RestAPIStatus.EXISTED, RestStatusMessage.BLOG_ALREADY_EXISTED);
-
         Validator.notNullAndNotEmpty(blogDTO.getTitle(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_TITLE_FORMAT);
         Validator.notNullAndNotEmpty(blogDTO.getContent(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_CONTENT_FORMAT);
-
 
         Blog blog = Blog.builder()
                 .id(UniqueID.getUUID())
@@ -42,6 +45,31 @@ public class BlogServiceImpl extends AbstractBaseService<Blog, String> implement
                 .userId(userId)
                 .systemStatus(SystemStatus.ACTIVE)
                 .build();
+        this.save(blog);
+    }
+    @Override
+    public List<Blog> getAllBlogs() {
+        return blogRepository.findAll();
+    }
+
+    @Override
+    public void editBlog(String id, EditBlogRequest editBlogRequest) {
+        Blog existingBlog = blogRepository.findBlogByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+
+        if (existingBlog == null) {
+            Validator.notNullAndNotEmpty(existingBlog, RestAPIStatus.NOT_FOUND, RestStatusMessage.BLOG_NOT_FOUND);
+        }
+
+        existingBlog.setTitle(editBlogRequest.getTitle());
+        existingBlog.setContent(editBlogRequest.getContent());
+
+        blogRepository.save(existingBlog);
+    }
+    @Override
+    public void deleteBlog(String id) {
+        Blog blog = blogRepository.findBlogByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+        Validator.notNullAndNotEmpty(blog, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
+        blog.setSystemStatus(SystemStatus.INACTIVE);
         this.save(blog);
     }
 }
