@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface LessonRepository extends JpaRepository<Lesson, String> {
     boolean existsByTitle(String title);
     LessonDTO getLessonByIdAndLessonTypeAndSystemStatus(String id, LessonType lessonType, SystemStatus status);
+    Lesson findLessonByIdAndSystemStatus(String id, SystemStatus status);
 }
