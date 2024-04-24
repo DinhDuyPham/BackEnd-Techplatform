@@ -18,9 +18,9 @@ import lombok.Setter;
 @JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
 public class BlogDTO {
     private String id;
-    @NotBlank
+
     private String title;
-    @NotBlank
+
     private String content;
 
     private int viewed;

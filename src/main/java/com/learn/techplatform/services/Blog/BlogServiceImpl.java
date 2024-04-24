@@ -5,6 +5,7 @@ import com.learn.techplatform.common.restfullApi.RestAPIStatus;
 import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import com.learn.techplatform.common.utils.StringUtils;
 import com.learn.techplatform.common.utils.UniqueID;
+import com.learn.techplatform.controllers.models.request.EditBlogRequest;
 import com.learn.techplatform.dto_modals.BlogDTO;
 import com.learn.techplatform.dto_modals.CourseDTO;
 import com.learn.techplatform.entities.Blog;
@@ -48,19 +49,21 @@ public class BlogServiceImpl extends AbstractBaseService<Blog, String> implement
     }
     @Override
     public List<Blog> getAllBlogs() {
-        return blogRepository.findAll(); // Lấy tất cả các blog từ cơ sở dữ liệu
+        return blogRepository.findAll();
     }
-    @Override
-    public void editBlog(String id, BlogDTO blogDTO) {
 
-        if (!id.equals(blogDTO.getId())) {
-            Validator.notNullAndNotEmpty(blogDTO.getContent(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.INVALID_CONTENT_FORMAT);
+    @Override
+    public void editBlog(String id, EditBlogRequest editBlogRequest) {
+        Blog existingBlog = blogRepository.findBlogByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+
+        if (existingBlog == null) {
+            Validator.notNullAndNotEmpty(existingBlog, RestAPIStatus.NOT_FOUND, RestStatusMessage.BLOG_NOT_FOUND);
         }
-        Blog blog = blogRepository.findBlogByIdAndSystemStatus(id, SystemStatus.ACTIVE);
-        Validator.notNullAndNotEmpty(blog, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
-        blog.setTitle(blogDTO.getTitle());
-        blog.setContent(blogDTO.getContent());
-        this.save(blog);
+
+        existingBlog.setTitle(editBlogRequest.getTitle());
+        existingBlog.setContent(editBlogRequest.getContent());
+
+        blogRepository.save(existingBlog);
     }
     @Override
     public void deleteBlog(String id) {

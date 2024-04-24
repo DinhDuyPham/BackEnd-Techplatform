@@ -2,6 +2,7 @@ package com.learn.techplatform.controllers;
 
 import com.learn.techplatform.common.constants.ApiPath;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
+import com.learn.techplatform.controllers.models.request.EditBlogRequest;
 import com.learn.techplatform.dto_modals.BlogDTO;
 import com.learn.techplatform.security.AuthSession;
 import com.learn.techplatform.security.AuthUser;
@@ -13,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.learn.techplatform.controllers.models.request.EditUserRequest;
 @Slf4j
 @RestController
 @RequestMapping(ApiPath.BLOG_API)
@@ -36,8 +37,8 @@ public class BlogController extends AbstractBaseController{
     }
     @PutMapping(ApiPath.EDIT + ApiPath.ID)
     @Operation(summary = "Update blog")
-    ResponseEntity<RestAPIResponse<Object>> editBlog(@PathVariable("id") String id, @RequestBody @Valid BlogDTO blogDTO, @Parameter(hidden = true) @AuthSession() AuthUser user) {
-        blogService.editBlog(id,blogDTO);
+    ResponseEntity<RestAPIResponse<Object>> editBlog(@PathVariable("id") String id, @RequestBody @Valid EditBlogRequest editBlogRequest) {
+        blogService.editBlog(id,editBlogRequest);
         return responseUtil.successResponse("OK!");
     }
 }
