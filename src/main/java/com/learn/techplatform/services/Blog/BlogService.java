@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface BlogService extends InterfaceBaseService<Blog, String> {
     void createBlog(BlogDTO blogDTO, String userId);
-    public void editBlog(String id,EditBlogRequest editBlogRequest);
+    void editBlog(String id,EditBlogRequest editBlogRequest);
     void deleteBlog(String id);
     public List<Blog> getAllBlogs();
 }
