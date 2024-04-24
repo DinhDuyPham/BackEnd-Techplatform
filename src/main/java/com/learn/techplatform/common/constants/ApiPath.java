@@ -46,4 +46,9 @@ public interface ApiPath {
 
     // USER ROLE API
     String ADMIN = "/admin";
+
+    // LESSON TYPE VIDEO API
+    String VIDEO = "/video";
+    String DOCUMENT = "/document";
+    String QUESTION = "/question";
 }
