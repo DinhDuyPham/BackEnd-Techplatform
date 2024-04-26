@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,17 @@ import org.springframework.web.bind.annotation.*;
 public class LessonController extends AbstractBaseController{
     @Autowired
     LessonService lessonService;
+
+    @GetMapping(ApiPath.GET_PAGE)
+    @Operation(summary = "Get Lesson Pagination")
+    ResponseEntity<RestAPIResponse<Object>> getPageLesson(@RequestParam(name = "page_number", defaultValue = "1", required = false) int pageNumber,
+                                                          @RequestParam(name = "page_size", defaultValue = "10", required = false) int pageSize,
+                                                          @RequestParam(name = "sort_type", defaultValue = "ASC", required = false) Sort.Direction sortType,
+                                                          @RequestParam(name = "sort_type_date", defaultValue = "ASC", required = false) Sort.Direction sortTypeDate,
+                                                          @RequestParam(name = "search_key", defaultValue = "", required = false) String searchKey)
+    {
+        return responseUtil.successResponse(lessonService.getPageLesson(pageNumber, pageSize, sortType, sortTypeDate, searchKey));
+    }
 
     @GetMapping()
     @Operation(summary = "Get All Lesson")
