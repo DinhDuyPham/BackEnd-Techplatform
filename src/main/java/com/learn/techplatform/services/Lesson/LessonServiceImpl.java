@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class LessonServiceImpl extends AbstractBaseService<Lesson, String> implements LessonService{
+public class LessonServiceImpl extends AbstractBaseService<Lesson, String> implements LessonService {
     @Autowired
     LessonRepository lessonRepository;
 
@@ -67,6 +67,60 @@ public class LessonServiceImpl extends AbstractBaseService<Lesson, String> imple
                 .systemStatus(SystemStatus.ACTIVE)
                 .build();
 
+        this.save(lesson);
+    }
+
+    @Override
+    public void editLesson(String id, LessonDTO lessonDTO) {
+        Lesson lesson = lessonRepository.findLessonByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+        Validator.notNullAndNotEmpty(lesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.LESSON_NOT_FOUND);
+
+        boolean isTitleExist = lessonRepository.existsByTitle(lessonDTO.getTitle());
+        Validator.mustTrue(!isTitleExist, RestAPIStatus.EXISTED, RestStatusMessage.LESSON_ALREADY_EXISTED);
+        if (Validator.checkNull(lessonDTO.getTitle()))
+            lesson.setTitle(lesson.getTitle());
+        else lesson.setTitle(lessonDTO.getTitle());
+        lesson.setSlug(StringUtils.slugify(lessonDTO.getTitle()));
+
+        if (Validator.checkNull(lessonDTO.getThumbnailUrl()))
+            lesson.setThumbnailUrl(lesson.getThumbnailUrl());
+        else lesson.setThumbnailUrl(lessonDTO.getThumbnailUrl());
+
+        if (Validator.checkNull(lessonDTO.getDuration()))
+            lesson.setDuration(lesson.getDuration());
+
+        if (Validator.checkNull(lessonDTO.getContent()))
+            lesson.setContent(lesson.getContent());
+        else lesson.setContent(lessonDTO.getContent());
+
+        if (Validator.checkNull(lessonDTO.getLessonType()))
+            lesson.setLessonType(lesson.getLessonType());
+        else lesson.setLessonType(lessonDTO.getLessonType());
+
+        if (Validator.checkNull(lessonDTO.getQuestion()))
+            lesson.setQuestion(lesson.getQuestion());
+        else lesson.setQuestion(lessonDTO.getQuestion());
+
+        if (Validator.checkNull(lessonDTO.getNumericalOrder()))
+            lesson.setNumericalOrder(lesson.getNumericalOrder());
+        else lesson.setNumericalOrder(lessonDTO.getNumericalOrder());
+
+        if (Validator.checkNull(lessonDTO.getLessonType()))
+            lesson.setChapterId(lesson.getChapterId());
+        else lesson.setChapterId(lessonDTO.getChapterId());
+
+        if (Validator.checkNull(lessonDTO.getLessonType()))
+            lesson.setVideoId(lesson.getVideoId());
+        else lesson.setVideoId(lessonDTO.getVideoId());
+
+        this.save(lesson);
+    }
+
+    @Override
+    public void deleteLesson(String id) {
+        Lesson lesson = lessonRepository.findLessonByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+        Validator.notNullAndNotEmpty(lesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.LESSON_NOT_FOUND);
+        lesson.setSystemStatus(SystemStatus.INACTIVE);
         this.save(lesson);
     }
 }

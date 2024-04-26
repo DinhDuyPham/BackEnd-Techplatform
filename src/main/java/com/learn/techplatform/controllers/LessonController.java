@@ -3,6 +3,7 @@ package com.learn.techplatform.controllers;
 import com.learn.techplatform.common.constants.ApiPath;
 import com.learn.techplatform.common.enums.LessonType;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
+import com.learn.techplatform.controllers.models.request.CreateLessonRequest;
 import com.learn.techplatform.controllers.models.request.EditLessonRequest;
 import com.learn.techplatform.dto_modals.LessonDTO;
 import com.learn.techplatform.services.Lesson.LessonService;
@@ -46,9 +47,24 @@ public class LessonController extends AbstractBaseController{
 
     @PostMapping(ApiPath.VIDEO + ApiPath.ADD)
     @Operation(summary = "Create new video lesson")
-    ResponseEntity<RestAPIResponse<Object>> createLesson(@RequestBody @Valid EditLessonRequest editLessonRequest) {
-        LessonDTO lessonDTO = new LessonDTO(editLessonRequest, LessonType.VIDEO);
+    ResponseEntity<RestAPIResponse<Object>> createLesson(@RequestBody @Valid CreateLessonRequest createLessonRequest) {
+        LessonDTO lessonDTO = new LessonDTO(createLessonRequest, LessonType.VIDEO);
         lessonService.createVideoLesson(lessonDTO);
+        return responseUtil.successResponse("OK!");
+    }
+
+    @PutMapping(ApiPath.EDIT + ApiPath.ID)
+    @Operation(summary = "Edit lesson")
+    ResponseEntity<RestAPIResponse<Object>> editLesson(@PathVariable("id") String id, @RequestBody @Valid EditLessonRequest editLessonRequest) {
+        LessonDTO lessonDTO = new LessonDTO(editLessonRequest);
+        lessonService.editLesson(id, lessonDTO);
+        return responseUtil.successResponse("OK!");
+    }
+
+    @DeleteMapping(ApiPath.DELETE)
+    @Operation(summary = "Delete lesson")
+    ResponseEntity<RestAPIResponse<Object>> deleteLesson(@PathVariable("id") String id) {
+        lessonService.deleteLesson(id);
         return responseUtil.successResponse("OK!");
     }
 }

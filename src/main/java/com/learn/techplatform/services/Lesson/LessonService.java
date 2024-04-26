@@ -10,4 +10,6 @@ public interface LessonService extends InterfaceBaseService<Lesson, String> {
     PagingResponse getPageLesson(int pageNumber, int pageSize, Sort.Direction sortType, Sort.Direction sortTypeDate, String searchKey);
     LessonDTO getVideoLessonById(String id);
     void createVideoLesson(LessonDTO lessonDTO);
+    void editLesson(String id, LessonDTO lessonDTO);
+    void deleteLesson(String id);
 }

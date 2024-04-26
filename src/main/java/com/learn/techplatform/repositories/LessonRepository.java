@@ -22,4 +22,5 @@ public interface LessonRepository extends JpaRepository<Lesson, String> {
     """)
     Page<Lesson> getPageLesson(@Param("search_key") String searchKey, Pageable pageable);
     LessonDTO getLessonByIdAndLessonTypeAndSystemStatus(String id, LessonType lessonType, SystemStatus status);
+    Lesson findLessonByIdAndSystemStatus(String id, SystemStatus status);
 }
