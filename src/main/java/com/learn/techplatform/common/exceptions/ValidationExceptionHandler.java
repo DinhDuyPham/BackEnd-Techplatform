@@ -37,9 +37,9 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
         ResponseEntity<RestAPIResponse<Object>> response;
         if (ex.getApiStatus() == RestAPIStatus.BAD_REQUEST) {
             // handle bad request
-            response = responseUtil.buildResponse(RestAPIStatus.BAD_REQUEST, ex.getMessage(), HttpStatus.MULTI_STATUS);
+            response = responseUtil.buildResponse(RestAPIStatus.BAD_REQUEST, null, ex.getMessage(), HttpStatus.MULTI_STATUS);
         } else {
-            response = responseUtil.buildResponse(ex.getApiStatus(), ex.getMessage(), HttpStatus.OK);
+            response = responseUtil.buildResponse(ex.getApiStatus(), null, ex.getMessage(), HttpStatus.OK);
         }
 
         return response;
@@ -60,7 +60,7 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<RestAPIResponse<Object>> handleUncatchException(Exception ex, WebRequest request) {
         log.error("handleUncatchException", ex);
-        return responseUtil.buildResponse(RestAPIStatus.INTERNAL_SERVER_ERROR, "Please contact System SysAdmin to resolve problem", HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseUtil.buildResponse(RestAPIStatus.INTERNAL_SERVER_ERROR, null,"Please contact System SysAdmin to resolve problem", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -73,7 +73,7 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         log.error("handleHttpMessageNotReadable", ex);
-        return new ResponseEntity<Object>(new RestAPIResponse<>(RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST), headers, status);
+        return new ResponseEntity<Object>(new RestAPIResponse<>(RestAPIStatus.BAD_REQUEST,null, RestStatusMessage.BAD_REQUEST.name()), headers, status);
     }
 
     /**
@@ -98,7 +98,7 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
             sb.append(message).append("; ");
         }
 
-        return new ResponseEntity<Object>(new RestAPIResponse(RestAPIStatus.BAD_REQUEST, sb.toString()), headers, status);
+        return new ResponseEntity<Object>(new RestAPIResponse(RestAPIStatus.BAD_REQUEST, null, sb.toString()), headers, status);
     }
 
 

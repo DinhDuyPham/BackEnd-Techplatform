@@ -37,7 +37,7 @@ public class AuthenticationController extends AbstractBaseController {
     @PostMapping(ApiPath.GOOGLE_LOGIN)
     @Operation(summary = "Google Login")
     ResponseEntity<RestAPIResponse<Object>> signInGoogle(@Valid @RequestBody GoogleLoginRequest googleLoginRequest, HttpServletRequest request) {
-        return responseUtil.successResponse("ok");
+        return responseUtil.successResponse(authService.googleLoginUser(googleLoginRequest,request, appValueConfigure));
     }
 
     @PostMapping(ApiPath.SIGN_UP)

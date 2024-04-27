@@ -4,4 +4,5 @@ public enum SessionType {
     PRIMARY,
     FORGOT_PASSWORD,
     VERIFY_SIGNUP,
+    GOOGLE_LOGIN
 }

@@ -37,11 +37,15 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     public UserRecord getAuthGoogle(String token) {
         try {
+            log.info("token >>" + token);
+
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
             String uid = decodedToken.getUid();
-            return FirebaseAuth.getInstance().getUser(uid);
+            UserRecord user = FirebaseAuth.getInstance().getUser(uid);
+            log.info("USER >>", user);
+            return user;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("USER >> " + e.getMessage());
         }
         return null;
     }

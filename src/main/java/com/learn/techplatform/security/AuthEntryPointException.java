@@ -36,14 +36,14 @@ public class AuthEntryPointException implements AuthenticationEntryPoint, Serial
         log.error("authException" + authException.getMessage());
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new RestAPIResponse<>(RestAPIStatus.UNAUTHORIZED, RestStatusMessage.UNAUTHORIZED)));
+        response.getWriter().write(objectMapper.writeValueAsString(new RestAPIResponse<>(RestAPIStatus.UNAUTHORIZED, null, RestStatusMessage.UNAUTHORIZED.name())));
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class})
     public void commence(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex) throws IOException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json");
-        response.getWriter().write(objectMapper.writeValueAsString(new RestAPIResponse<>(RestAPIStatus.FORBIDDEN, null)));
+        response.getWriter().write(objectMapper.writeValueAsString(new RestAPIResponse<>(RestAPIStatus.FORBIDDEN, null, RestStatusMessage.FORBIDDEN.name())));
     }
 
     @ExceptionHandler(value = {MultipartException.class})
@@ -54,7 +54,7 @@ public class AuthEntryPointException implements AuthenticationEntryPoint, Serial
         response.setContentType("application/json");
         response
                 .getWriter()
-                .write(objectMapper.writeValueAsString(new RestAPIResponse(RestAPIStatus.BAD_REQUEST, null)));
+                .write(objectMapper.writeValueAsString(new RestAPIResponse(RestAPIStatus.BAD_REQUEST, null, RestStatusMessage.BAD_REQUEST.name())));
     }
 
 

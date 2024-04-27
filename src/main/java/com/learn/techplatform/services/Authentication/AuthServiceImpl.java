@@ -147,15 +147,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse googleLoginUser(GoogleLoginRequest loginRequest, HttpServletRequest request) {
+    public AuthResponse googleLoginUser(GoogleLoginRequest loginRequest, HttpServletRequest request, AppValueConfigure appValueConfigure) {
         UserRecord userRecord = firebaseService.getAuthGoogle(loginRequest.getToken());
+        log.info("user record",userRecord);
         Validator.notNull(userRecord, RestAPIStatus.INVALID_CREDENTIAL, RestStatusMessage.INVALID_AUTHENTICATE_CREDENTIAL);
         User user = userRepository.findByEmailAndSystemStatusAndUserStatus(userRecord.getEmail(), SystemStatus.ACTIVE, UserStatus.ACTIVE);
         if(user == null) {
             user = userHelper.createUser(userRecord);
         }
         user = userService.save(user);
-        Session sessionAuth = sessionHelper.createSessionAuth(user.getId());
+        Session sessionAuth = sessionHelper.createSession(user.getId(),DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION, SessionType.GOOGLE_LOGIN);
+        sessionService.save(sessionAuth);
         return AuthResponse.builder()
                 .accessToken(sessionAuth.getId())
                 .expireTime(sessionAuth.getExpireTime())
