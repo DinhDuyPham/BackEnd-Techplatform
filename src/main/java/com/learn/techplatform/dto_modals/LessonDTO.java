@@ -3,6 +3,7 @@ package com.learn.techplatform.dto_modals;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.learn.techplatform.common.enums.LessonStatus;
 import com.learn.techplatform.common.enums.LessonType;
 import com.learn.techplatform.controllers.models.request.CreateLessonRequest;
 import com.learn.techplatform.controllers.models.request.EditLessonRequest;
@@ -23,6 +24,7 @@ public class LessonDTO {
     private String thumbnailUrl;
     private long duration;
     private LessonType lessonType;
+    private LessonStatus lessonStatus;
     private String content;
     private String question;
     private int numericalOrder;
@@ -36,7 +38,7 @@ public class LessonDTO {
         this.thumbnailUrl = lesson.getThumbnailUrl();
         this.duration = lesson.getDuration();
         this.lessonType = lesson.getLessonType();
-
+        this.lessonStatus = lesson.getLessonStatus();
     }
 
     public LessonDTO(EditLessonRequest editLessonRequest) {
@@ -61,5 +63,6 @@ public class LessonDTO {
         this.lessonType = lessonType;
         this.chapterId = createLessonRequest.getChapterId();
         this.videoId = createLessonRequest.getVideoId();
+        this.lessonStatus = LessonStatus.LOCKED;
     }
 }
