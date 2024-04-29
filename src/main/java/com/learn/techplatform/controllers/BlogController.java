@@ -12,13 +12,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.learn.techplatform.controllers.models.request.EditUserRequest;
+
 @Slf4j
 @RestController
 @RequestMapping(ApiPath.BLOG_API)
-public class BlogController extends AbstractBaseController{
+public class BlogController extends AbstractBaseController {
     @Autowired
     BlogService blogService;
 
@@ -35,11 +36,23 @@ public class BlogController extends AbstractBaseController{
         blogService.deleteBlog(id);
         return responseUtil.successResponse("OK!");
     }
+
     @PutMapping(ApiPath.EDIT + ApiPath.ID)
     @Operation(summary = "Update blog")
     ResponseEntity<RestAPIResponse<Object>> editBlog(@PathVariable("id") String id, @RequestBody @Valid EditBlogRequest editBlogRequest) {
-        blogService.editBlog(id,editBlogRequest);
+        blogService.editBlog(id, editBlogRequest);
         return responseUtil.successResponse("OK!");
+    }
+
+    @GetMapping(ApiPath.GET_PAGE)
+    @Operation(summary = "Get Blog Pagination")
+    ResponseEntity<RestAPIResponse<Object>> getPageBlog(@RequestParam(name = "page_number", defaultValue = "1", required = false) int pageNumber,
+                                                          @RequestParam(name = "page_size", defaultValue = "10", required = false) int pageSize,
+                                                          @RequestParam(name = "sort_type", defaultValue = "ASC", required = false) Sort.Direction sortType,
+                                                          @RequestParam(name = "sort_type_date", defaultValue = "ASC", required = false) Sort.Direction sortTypeDate,
+                                                          @RequestParam(name = "search_key", defaultValue = "", required = false) String searchKey)
+    {
+        return responseUtil.successResponse(blogService.getPageBlog(pageNumber, pageSize, sortType, sortTypeDate, searchKey));
     }
 }
 
