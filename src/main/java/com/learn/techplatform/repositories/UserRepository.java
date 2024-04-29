@@ -31,4 +31,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findByEmailAndSystemStatusAndUserStatus(String email, SystemStatus status, UserStatus userStatus);
 
     User findByIdAndSystemStatusAndUserStatus(String id, SystemStatus status, UserStatus userStatus);
+    boolean existsByEmailAndSystemStatusAndUserStatus(String email, SystemStatus systemStatus, UserStatus userStatus);
 }

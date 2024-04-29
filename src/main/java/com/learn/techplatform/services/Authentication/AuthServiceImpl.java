@@ -57,44 +57,44 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenResponse signUpUserVerify(UserDTO userDTO, HttpServletRequest request) {
         User userPending = userRepository.findByEmailAndSystemStatusAndUserStatus(
-            userDTO.getEmail(),
-            SystemStatus.ACTIVE,
-            UserStatus.PENDING
+                userDTO.getEmail(),
+                SystemStatus.ACTIVE,
+                UserStatus.PENDING
         );
-        if(userPending != null) {
+        if (userPending != null) {
             userPending.setUserStatus(UserStatus.INACTIVE);
             userPending.setSystemStatus(SystemStatus.INACTIVE);
             userService.save(userPending);
         }
         User userActive = userRepository.findByEmailAndSystemStatusAndUserStatus(
-            userDTO.getEmail(),
-            SystemStatus.ACTIVE,
-            UserStatus.ACTIVE
+                userDTO.getEmail(),
+                SystemStatus.ACTIVE,
+                UserStatus.ACTIVE
         );
         Validator.mustNull(userActive, RestAPIStatus.EXISTED, RestStatusMessage.EMAIL_ALREADY_EXISTED);
         User user = userHelper.createUser(userDTO, authHelper.createPasswordHash(userDTO.getPasswordHash()));
         user.setLastIpAddress(AppUtil.getClientIpAddress(request));
 
         Session session = sessionHelper.createSession(
-            user.getId(),
-            StringUtils.base64Encode(UniqueID.getRandomOTP()),
-            new Date(DateUtil.getUTCNow().getTime() + DateUtil.FIVE_MINUTE).getTime(),
-            SessionType.VERIFY_SIGNUP
+                user.getId(),
+                StringUtils.base64Encode(UniqueID.getRandomOTP()),
+                new Date(DateUtil.getUTCNow().getTime() + DateUtil.FIVE_MINUTE).getTime(),
+                SessionType.VERIFY_SIGNUP
         );
         sessionService.save(session);
         userService.save(user);
         return TokenResponse.builder()
-            .token(session.getId())
-            .expireTime(session.getExpireTime())
-            .build();
+                .token(session.getId())
+                .expireTime(session.getExpireTime())
+                .build();
     }
 
     @Override
     public AuthResponse confirmSignUpUser(ConfirmSignUpRequest confirmSignUpRequest, HttpServletRequest request) {
         Session session = sessionRepository.getByIdAndSystemStatusAndSessionType(
-            confirmSignUpRequest.getToken(),
-            SystemStatus.ACTIVE,
-            SessionType.VERIFY_SIGNUP
+                confirmSignUpRequest.getToken(),
+                SystemStatus.ACTIVE,
+                SessionType.VERIFY_SIGNUP
         );
         Validator.notNull(session, RestAPIStatus.NOT_FOUND, RestStatusMessage.SESSION_NOT_FOUND);
         Validator.mustTrue(sessionHelper.isExpirySession(session), RestAPIStatus.EXPIRED, RestStatusMessage.EXPIRED_VERIFY_TOKEN);
@@ -141,22 +141,22 @@ public class AuthServiceImpl implements AuthService {
         sessionService.save(sessionAuth);
 
         return AuthResponse.builder()
-            .accessToken(sessionAuth.getId())
-            .expireTime(sessionAuth.getExpireTime())
-            .build();
+                .accessToken(sessionAuth.getId())
+                .expireTime(sessionAuth.getExpireTime())
+                .build();
     }
 
     @Override
     public AuthResponse googleLoginUser(GoogleLoginRequest loginRequest, HttpServletRequest request, AppValueConfigure appValueConfigure) {
         UserRecord userRecord = firebaseService.getAuthGoogle(loginRequest.getToken());
-        log.info("user record",userRecord);
+        log.info("user record", userRecord);
         Validator.notNull(userRecord, RestAPIStatus.INVALID_CREDENTIAL, RestStatusMessage.INVALID_AUTHENTICATE_CREDENTIAL);
         User user = userRepository.findByEmailAndSystemStatusAndUserStatus(userRecord.getEmail(), SystemStatus.ACTIVE, UserStatus.ACTIVE);
-        if(user == null) {
+        if (user == null) {
             user = userHelper.createUser(userRecord);
         }
         user = userService.save(user);
-        Session sessionAuth = sessionHelper.createSession(user.getId(),DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION, SessionType.GOOGLE_LOGIN);
+        Session sessionAuth = sessionHelper.createSession(user.getId(), DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION, SessionType.GOOGLE_LOGIN);
         sessionService.save(sessionAuth);
         return AuthResponse.builder()
                 .accessToken(sessionAuth.getId())
@@ -167,9 +167,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(String userId, HttpServletRequest request) {
         String authToken = request.getHeader(Constant.HEADER_TOKEN);
-        Session session = sessionRepository.getByIdAndSystemStatusAndSessionType(authToken,SystemStatus.ACTIVE, SessionType.PRIMARY);
-        if(session != null) {
-            if(session.getUserId().equals(userId)) {
+        Session session = sessionRepository.getByIdAndSystemStatusAndSessionType(authToken, SystemStatus.ACTIVE, SessionType.PRIMARY);
+        if (session != null) {
+            if (session.getUserId().equals(userId)) {
                 User user = userRepository.findByIdAndSystemStatusAndUserStatus(userId, SystemStatus.ACTIVE, UserStatus.ACTIVE);
                 user.setLastIpAddress(AppUtil.getClientIpAddress(request));
                 userService.save(user);
@@ -184,44 +184,44 @@ public class AuthServiceImpl implements AuthService {
         UserDTO user = userService.getUserByEmail(emailRequest.getEmail());
         boolean isUserExist = user != null;
         Session session = sessionHelper.createSession(
-            !isUserExist ? "" : user.getId(),
-            StringUtils.base64Encode(UniqueID.getRandomOTP()),
-            DateUtil.getUTCNow().getTime() + DateUtil.FIVE_MINUTE,
-            SessionType.FORGOT_PASSWORD
+                !isUserExist ? "" : user.getId(),
+                StringUtils.base64Encode(UniqueID.getRandomOTP()),
+                DateUtil.getUTCNow().getTime() + DateUtil.FIVE_MINUTE,
+                SessionType.FORGOT_PASSWORD
         );
-        if(isUserExist) {
+        if (isUserExist) {
             sessionService.save(session);
         }
         return TokenResponse.builder()
-            .token(!isUserExist ? UniqueID.getUUID() : session.getId())
-            .expireTime(session.getExpireTime())
-            .build();
+                .token(!isUserExist ? UniqueID.getUUID() : session.getId())
+                .expireTime(session.getExpireTime())
+                .build();
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest resetPasswordRequest, HttpServletRequest request) {
         Session session = sessionRepository.getByIdAndSystemStatusAndSessionType(
-            resetPasswordRequest.getToken(),
-            SystemStatus.ACTIVE,
-            SessionType.FORGOT_PASSWORD
+                resetPasswordRequest.getToken(),
+                SystemStatus.ACTIVE,
+                SessionType.FORGOT_PASSWORD
         );
         Validator.notNull(session, RestAPIStatus.NOT_FOUND, RestStatusMessage.SESSION_NOT_FOUND);
         Validator.mustTrue(sessionHelper.isExpirySession(session), RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST);
         String otpDecode = StringUtils.decodeBase64(session.getData());
-        log.info("otpDecode "+ otpDecode);
+        log.info("otpDecode " + otpDecode);
         Validator.mustEquals(otpDecode, resetPasswordRequest.getOtp(), RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST);
         // Check password match
         Validator.mustEquals(
-            resetPasswordRequest.getPassword(),
-            resetPasswordRequest.getConfirmPassword(),
-            RestAPIStatus.CONFLICT,
-            RestStatusMessage.CONFIRM_PASSWORD_DOES_NOT_MATCH
+                resetPasswordRequest.getPassword(),
+                resetPasswordRequest.getConfirmPassword(),
+                RestAPIStatus.CONFLICT,
+                RestStatusMessage.CONFIRM_PASSWORD_DOES_NOT_MATCH
         );
 
         User user = userRepository.findByIdAndSystemStatusAndUserStatus(
-            session.getUserId(),
-            SystemStatus.ACTIVE,
-            UserStatus.ACTIVE
+                session.getUserId(),
+                SystemStatus.ACTIVE,
+                UserStatus.ACTIVE
         );
         Validator.notNull(user, RestAPIStatus.BAD_REQUEST, RestStatusMessage.BAD_REQUEST);
         user.setLastIpAddress(AppUtil.getClientIpAddress(request));

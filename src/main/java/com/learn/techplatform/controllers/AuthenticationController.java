@@ -79,4 +79,9 @@ public class AuthenticationController extends AbstractBaseController {
         return responseUtil.successResponse("ok");
     }
 
+    @PostMapping(ApiPath.VALIDATE)
+    @Operation(summary = "Validate")
+    ResponseEntity<RestAPIResponse<Object>> validate(@Valid @RequestBody ValidateRequest validateRequest) {
+        return responseUtil.successResponse("ok");
+    }
 }

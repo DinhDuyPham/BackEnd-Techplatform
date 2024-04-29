@@ -51,4 +51,7 @@ public interface ApiPath {
     String VIDEO = "/video";
     String DOCUMENT = "/document";
     String QUESTION = "/question";
+
+    // Validate
+    String VALIDATE = "/validate";
 }

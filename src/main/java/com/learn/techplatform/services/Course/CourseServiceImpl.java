@@ -10,9 +10,14 @@ import com.learn.techplatform.common.utils.StringUtils;
 import com.learn.techplatform.common.utils.UniqueID;
 import com.learn.techplatform.common.validations.Validator;
 import com.learn.techplatform.controllers.models.response.PagingResponse;
+import com.learn.techplatform.controllers.models.response.course_response.ChapterDetailResponse;
+import com.learn.techplatform.controllers.models.response.course_response.CourseDetailResponse;
+import com.learn.techplatform.controllers.models.response.course_response.LessonDetailResponse;
 import com.learn.techplatform.dto_modals.CourseDTO;
 import com.learn.techplatform.entities.Course;
+import com.learn.techplatform.repositories.ChapterRepository;
 import com.learn.techplatform.repositories.CourseRepository;
+import com.learn.techplatform.repositories.LessonRepository;
 import com.learn.techplatform.services.AbstractBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +33,10 @@ import java.util.List;
 public class CourseServiceImpl extends AbstractBaseService<Course, String> implements CourseService {
     @Autowired
     CourseRepository courseRepository;
+    @Autowired
+    ChapterRepository chapterRepository;
+    @Autowired
+    LessonRepository lessonRepository;
 
     public CourseServiceImpl(JpaRepository<Course, String> genericRepository) {
         super(genericRepository);
@@ -110,5 +119,26 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
         course.setSystemStatus(SystemStatus.INACTIVE);
         this.save(course);
+    }
+
+    @Override
+    public CourseDetailResponse getCourseDetailById(String id) {
+        Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+        List<ChapterDetailResponse> chapters = chapterRepository.getChaptersByCourseIdAndSystemStatus(id);
+        List<LessonDetailResponse> lessons = lessonRepository.getLessonsByCourseIdAndSystemStatus(id);
+
+        for (int i = 0; i < chapters.size(); i++) {
+            if (chapters.get(i).getCourseId() == id) {}
+                chapters.get(i).setLessons(lessons);
+        }
+
+        CourseDetailResponse courseDetailResponse = CourseDetailResponse.builder()
+                .title(course.getTitle())
+                .description(course.getDescription())
+                .content(course.getContent())
+                .chapters(chapters)
+                .build();
+
+        return courseDetailResponse;
     }
 }

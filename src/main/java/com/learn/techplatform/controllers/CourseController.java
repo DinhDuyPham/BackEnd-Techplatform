@@ -28,10 +28,10 @@ public class CourseController extends AbstractBaseController {
     }
 
     @GetMapping(ApiPath.ID)
-    @Operation(summary = "Get Course By ID")
-    ResponseEntity<RestAPIResponse<Object>> getCourseById(@PathVariable("id") String id)
+    @Operation(summary = "Get Details of Course And Lessons With Chapter By Course ID")
+    ResponseEntity<RestAPIResponse<Object>> getCourseDetailById(@PathVariable("id") String id)
     {
-        return responseUtil.successResponse(courseService.getById(id));
+        return responseUtil.successResponse(courseService.getCourseDetailById(id));
     }
 
     @GetMapping(ApiPath.GET_PAGE)

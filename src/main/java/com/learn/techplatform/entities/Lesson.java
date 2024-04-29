@@ -1,6 +1,7 @@
 package com.learn.techplatform.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.learn.techplatform.common.enums.LessonStatus;
 import com.learn.techplatform.common.enums.LessonType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,10 @@ public class Lesson extends AbstractBaseEntity<String> implements Serializable {
     @Column(name = "lesson_type")
     @Enumerated(EnumType.STRING)
     private LessonType lessonType;
+
+    @Column(name = "lesson_status")
+    @Enumerated(EnumType.STRING)
+    private LessonStatus lessonStatus;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
