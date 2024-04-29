@@ -17,6 +17,7 @@ public interface ApiPath {
     String BLOG_BOOKMARK_API = BASE_API_URL +  "/blog-bookmark";
     String NEWS_FEED_API = BASE_API_URL +  "/news-feed";
     String COMMENT_API = BASE_API_URL +  "/comment";
+    String NOTIFICATION_API = BASE_API_URL +  "/notification";
 
 
     // common

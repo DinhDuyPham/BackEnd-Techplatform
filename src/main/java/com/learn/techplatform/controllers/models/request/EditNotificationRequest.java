@@ -3,7 +3,6 @@ package com.learn.techplatform.controllers.models.request;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,9 +10,10 @@ import lombok.Setter;
 @Setter
 @JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EditBlogRequest {
-    @NotBlank
+public class EditNotificationRequest {
     private String title;
-    @NotBlank
     private String content;
+    private String linked;
+    private boolean seen;
+    private String userId;
 }
