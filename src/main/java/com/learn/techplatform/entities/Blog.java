@@ -37,6 +37,4 @@ public class Blog extends AbstractBaseEntity<String> implements Serializable {
 
     @Column(name = "liked")
     private int liked;
-
-
 }

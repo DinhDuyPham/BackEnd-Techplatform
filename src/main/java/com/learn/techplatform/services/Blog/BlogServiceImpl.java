@@ -6,6 +6,7 @@ import com.learn.techplatform.common.restfullApi.RestStatusMessage;
 import com.learn.techplatform.common.utils.StringUtils;
 import com.learn.techplatform.common.utils.UniqueID;
 import com.learn.techplatform.controllers.models.request.EditBlogRequest;
+import com.learn.techplatform.controllers.models.response.PagingResponse;
 import com.learn.techplatform.dto_modals.BlogDTO;
 import com.learn.techplatform.dto_modals.CourseDTO;
 import com.learn.techplatform.entities.Blog;
@@ -13,10 +14,15 @@ import com.learn.techplatform.entities.Course;
 import com.learn.techplatform.repositories.BlogRepository;
 import com.learn.techplatform.services.AbstractBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import com.learn.techplatform.common.validations.Validator;
 import com.learn.techplatform.repositories.BlogRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +56,18 @@ public class BlogServiceImpl extends AbstractBaseService<Blog, String> implement
     @Override
     public List<Blog> getAllBlogs() {
         return blogRepository.findAll();
+    }
+
+    @Override
+    public PagingResponse getPageBlog(int pageNumber, int pageSize, Sort.Direction sortType, Sort.Direction sortTypeDate, String searchKey) {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(sortType, "title"));
+        orders.add(new Sort.Order(sortTypeDate, "createdDate"));
+        orders.add(new Sort.Order(sortTypeDate, "updatedDate"));
+        Sort sort = Sort.by(orders);
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize, sort);
+        PagingResponse pagingResponse = new PagingResponse(blogRepository.getPageBlog("%" + searchKey + "%", pageable));
+        return pagingResponse;
     }
 
     @Override
