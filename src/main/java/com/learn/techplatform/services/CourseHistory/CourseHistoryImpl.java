@@ -1,5 +1,6 @@
 package com.learn.techplatform.services.CourseHistory;
 
+import com.learn.techplatform.common.enums.SystemStatus;
 import com.learn.techplatform.entities.CourseHistory;
 import com.learn.techplatform.repositories.CourseHistoryRepository;
 import com.learn.techplatform.services.AbstractBaseService;
@@ -14,5 +15,10 @@ public class CourseHistoryImpl extends AbstractBaseService<CourseHistory, String
 
     public CourseHistoryImpl(JpaRepository<CourseHistory, String> genericRepository) {
         super(genericRepository);
+    }
+
+    @Override
+    public CourseHistory getByCourseIdAndUserID(String courseId, String userID) {
+        return this.courseHistoryRepository.findByCourseIdAndUserIdAndSystemStatus(courseId, userID, SystemStatus.ACTIVE);
     }
 }

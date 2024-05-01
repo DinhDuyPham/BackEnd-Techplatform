@@ -6,14 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.learn.techplatform.common.enums.CourseType;
 import com.learn.techplatform.controllers.models.request.EditCourseRequest;
 import com.learn.techplatform.entities.Course;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
+@AllArgsConstructor
 @JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
 public class CourseDTO {
     private String id;

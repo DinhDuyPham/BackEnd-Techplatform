@@ -8,7 +8,7 @@ public interface ApiPath {
     String PRODUCT_API = BASE_API_URL + "/product";
     String ROLE_API = BASE_API_URL + "/role";
     String OTP_API = BASE_API_URL + "/otp";
-    String COURSE_API = BASE_API_URL +  "/course";
+    String COURSE_API = BASE_API_URL +  "/courses";
     String CHAPTER_API = BASE_API_URL +  "/chapter";
     String LESSON_API = BASE_API_URL +  "/lesson";
     String COURSE_HISTORY_API = BASE_API_URL +  "/course-history";
@@ -22,6 +22,7 @@ public interface ApiPath {
 
     // common
     String ID = "/{id}";
+    String SLUG = "/slug/{slug}";
     String DETAIL = "/detail";
     String ADD = "/add";
     String EDIT = "/edit";
@@ -30,6 +31,7 @@ public interface ApiPath {
     String GET_PAGE = "/page";
     String EXPORT = "/export";
     String VERIFY_TOKEN = "/{verify-token}";
+    String REGISTER = "/register";
 
     // Authenticate APIs
     String LOGIN = "/login";

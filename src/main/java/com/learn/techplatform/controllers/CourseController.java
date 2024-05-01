@@ -4,8 +4,12 @@ import com.learn.techplatform.common.constants.ApiPath;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
 import com.learn.techplatform.controllers.models.request.EditCourseRequest;
 import com.learn.techplatform.dto_modals.CourseDTO;
+import com.learn.techplatform.security.AuthSession;
+import com.learn.techplatform.security.AuthUser;
 import com.learn.techplatform.services.Course.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +28,20 @@ public class CourseController extends AbstractBaseController {
     @Operation(summary = "Get All Course")
     ResponseEntity<RestAPIResponse<Object>> getAllCourse()
     {
-        return responseUtil.successResponse(courseService.getAll());
+        return responseUtil.successResponse(courseService.getCourseDTO());
     }
 
     @GetMapping(ApiPath.ID)
     @Operation(summary = "Get Details of Course And Lessons With Chapter By Course ID")
-    ResponseEntity<RestAPIResponse<Object>> getCourseDetailById(@PathVariable("id") String id)
+    ResponseEntity<RestAPIResponse<Object>> getCourseDetailById(@PathVariable("id") String id, @AuthSession AuthUser authUser)
     {
-        return responseUtil.successResponse(courseService.getCourseDetailById(id));
+        return responseUtil.successResponse(courseService.getCourseDetailById(id, authUser));
+    }
+
+    @GetMapping( ApiPath.SLUG)
+    @Operation(summary = "Get with slug")
+    ResponseEntity<RestAPIResponse<Object>> getCourseDetailBySlug(@PathVariable("slug") String slug, HttpServletRequest request) {
+        return responseUtil.successResponse(courseService.getCourseDetailInformationBySlug(slug, request));
     }
 
     @GetMapping(ApiPath.GET_PAGE)
@@ -66,5 +76,11 @@ public class CourseController extends AbstractBaseController {
     ResponseEntity<RestAPIResponse<Object>> deleteCourse(@PathVariable("id") String id) {
         courseService.deleteCourse(id);
         return responseUtil.successResponse("OK!");
+    }
+
+    @PostMapping(ApiPath.REGISTER  + ApiPath.ID)
+    @Operation(summary = "Register the course")
+    ResponseEntity<RestAPIResponse<Object>> registerCourse(@PathVariable("id") String id, @AuthSession AuthUser authSession) {
+        return responseUtil.successResponse(this.courseService.registerCourse(id, authSession.getId()));
     }
 }

@@ -149,7 +149,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse googleLoginUser(GoogleLoginRequest loginRequest, HttpServletRequest request, AppValueConfigure appValueConfigure) {
         UserRecord userRecord = firebaseService.getAuthGoogle(loginRequest.getToken());
-        log.info("user record", userRecord);
         Validator.notNull(userRecord, RestAPIStatus.INVALID_CREDENTIAL, RestStatusMessage.INVALID_AUTHENTICATE_CREDENTIAL);
         User user = userRepository.findByEmailAndSystemStatusAndUserStatus(userRecord.getEmail(), SystemStatus.ACTIVE, UserStatus.ACTIVE);
         if (user == null) {

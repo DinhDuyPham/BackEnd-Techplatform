@@ -17,6 +17,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -99,6 +100,11 @@ public class ValidationExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         return new ResponseEntity<Object>(new RestAPIResponse(RestAPIStatus.BAD_REQUEST, null, sb.toString()), headers, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return new ResponseEntity<Object>(new RestAPIResponse(RestAPIStatus.NOT_FOUND, null, ex.getMessage().toString()), headers, status);
     }
 
 

@@ -1,5 +1,6 @@
 package com.learn.techplatform.repositories;
 
+import com.learn.techplatform.common.enums.LessonStatus;
 import com.learn.techplatform.common.enums.LessonType;
 import com.learn.techplatform.common.enums.SystemStatus;
 import com.learn.techplatform.controllers.models.response.course_response.LessonDetailResponse;
@@ -33,4 +34,24 @@ public interface LessonRepository extends JpaRepository<Lesson, String> {
         where l.chapterId = ch.id and ch.courseId = co.id and co.id = :course_id and l.systemStatus = 'ACTIVE'
     """)
     List<LessonDetailResponse> getLessonsByCourseIdAndSystemStatus(@Param("course_id") String courseId);
+
+    @Query("""
+        select new com.learn.techplatform.dto_modals.LessonDTO(le, :is_expland)
+        from Lesson le, Chapter ch
+        where le.chapterId = ch.id and 
+            ch.courseId = :course_id and 
+            ch.systemStatus = 'ACTIVE' and
+            le.systemStatus = 'ACTIVE'
+   """)
+    List<LessonDTO> getByCourseId(@Param("course_id") String courseId, @Param("is_expland") boolean isExpland);
+
+    @Query("""
+        select new com.learn.techplatform.dto_modals.LessonDTO(l, true)
+        from Lesson l
+        where l.id = :id and l.systemStatus = 'ACTIVE'
+    """)
+    LessonDTO getDTOById(@Param("id") String id);
+
+
+    Lesson getByNumericalOrderAndSystemStatus(int numericalOrder, SystemStatus status);
 }

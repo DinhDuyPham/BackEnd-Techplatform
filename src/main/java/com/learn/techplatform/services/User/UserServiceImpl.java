@@ -37,6 +37,11 @@ public class UserServiceImpl extends AbstractBaseService<User, String> implement
     }
 
     @Override
+    public UserDTO getAuthInfoFromToken(String authToken) {
+        return this.userRepository.getAuthInfoFromAuthToken(authToken);
+    }
+
+    @Override
     public void editUserInfo(String id, UserDTO userDTO) {
         User user = userRepository.findByIdAndSystemStatusAndUserStatus(id, SystemStatus.ACTIVE, UserStatus.ACTIVE);
         Validator.notNull(user, RestAPIStatus.NOT_FOUND, RestStatusMessage.USER_NOT_FOUND);

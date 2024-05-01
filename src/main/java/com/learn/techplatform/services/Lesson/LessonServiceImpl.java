@@ -44,8 +44,8 @@ public class LessonServiceImpl extends AbstractBaseService<Lesson, String> imple
     }
 
     @Override
-    public LessonDTO getVideoLessonById(String id) {
-        return lessonRepository.getLessonByIdAndLessonTypeAndSystemStatus(id, LessonType.VIDEO, SystemStatus.ACTIVE);
+    public LessonDTO getLessonById(String id) {
+        return lessonRepository.getDTOById(id);
     }
 
     @Override

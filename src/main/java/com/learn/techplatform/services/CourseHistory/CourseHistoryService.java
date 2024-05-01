@@ -6,5 +6,5 @@ import com.learn.techplatform.services.InterfaceBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public interface CourseHistoryService extends InterfaceBaseService<CourseHistory, String> {
-
+    CourseHistory getByCourseIdAndUserID(String courseId, String userID);
 }

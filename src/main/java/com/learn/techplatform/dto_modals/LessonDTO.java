@@ -11,10 +11,14 @@ import com.learn.techplatform.entities.Lesson;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
+@Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
 public class LessonDTO {
@@ -35,10 +39,28 @@ public class LessonDTO {
         this.id = lesson.getId();
         this.title = lesson.getTitle();
         this.slug = lesson.getSlug();
-        this.thumbnailUrl = lesson.getThumbnailUrl();
         this.duration = lesson.getDuration();
-        this.lessonType = lesson.getLessonType();
         this.lessonStatus = lesson.getLessonStatus();
+        this.chapterId = lesson.getChapterId();
+        this.numericalOrder = lesson.getNumericalOrder();
+    }
+
+    public LessonDTO(Lesson lesson, boolean isExpland) {
+        this.id = lesson.getId();
+        this.title = lesson.getTitle();
+        this.slug = lesson.getSlug();
+        this.duration = lesson.getDuration();
+        this.lessonStatus = lesson.getLessonStatus();
+        this.chapterId = lesson.getChapterId();
+        this.numericalOrder = lesson.getNumericalOrder();
+        if(isExpland) {
+            this.question = lesson.getQuestion();
+            this.videoId = lesson.getVideoId();
+            this.lessonType = lesson.getLessonType();
+            this.thumbnailUrl = lesson.getThumbnailUrl();
+            this.content = lesson.getContent();
+
+        }
     }
 
     public LessonDTO(EditLessonRequest editLessonRequest) {

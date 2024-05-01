@@ -1,5 +1,7 @@
 package com.learn.techplatform.services.Course;
 
+import com.learn.techplatform.common.constants.Constant;
+import com.learn.techplatform.common.enums.CourseHistoryStatus;
 import com.learn.techplatform.common.enums.CourseType;
 import com.learn.techplatform.common.enums.GenderType;
 import com.learn.techplatform.common.enums.SystemStatus;
@@ -10,15 +12,30 @@ import com.learn.techplatform.common.utils.StringUtils;
 import com.learn.techplatform.common.utils.UniqueID;
 import com.learn.techplatform.common.validations.Validator;
 import com.learn.techplatform.controllers.models.response.PagingResponse;
+import com.learn.techplatform.controllers.models.response.UserCourseRegisterResponse;
 import com.learn.techplatform.controllers.models.response.course_response.ChapterDetailResponse;
 import com.learn.techplatform.controllers.models.response.course_response.CourseDetailResponse;
 import com.learn.techplatform.controllers.models.response.course_response.LessonDetailResponse;
 import com.learn.techplatform.dto_modals.CourseDTO;
+import com.learn.techplatform.dto_modals.LessonDTO;
+import com.learn.techplatform.dto_modals.UserDTO;
+import com.learn.techplatform.dto_modals.course.CourseChapterListDTO;
+import com.learn.techplatform.dto_modals.course.CourseDetailInformationDTO;
 import com.learn.techplatform.entities.Course;
+import com.learn.techplatform.entities.CourseHistory;
+import com.learn.techplatform.entities.Lesson;
+import com.learn.techplatform.entities.User;
+import com.learn.techplatform.helper.ChapterHelper;
 import com.learn.techplatform.repositories.ChapterRepository;
 import com.learn.techplatform.repositories.CourseRepository;
 import com.learn.techplatform.repositories.LessonRepository;
+import com.learn.techplatform.security.AuthUser;
 import com.learn.techplatform.services.AbstractBaseService;
+import com.learn.techplatform.services.CourseHistory.CourseHistoryService;
+import com.learn.techplatform.services.User.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,15 +45,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CourseServiceImpl extends AbstractBaseService<Course, String> implements CourseService {
+    private static final Logger log = LoggerFactory.getLogger(CourseServiceImpl.class);
     @Autowired
     CourseRepository courseRepository;
     @Autowired
     ChapterRepository chapterRepository;
     @Autowired
     LessonRepository lessonRepository;
+    @Autowired
+    CourseHistoryService courseHistoryService;
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    ChapterHelper chapterHelper;
 
     public CourseServiceImpl(JpaRepository<Course, String> genericRepository) {
         super(genericRepository);
@@ -82,7 +108,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
 
     @Override
     public void editCourse(String id, CourseDTO courseDTO) {
-        Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+        Course course = courseRepository.findByIdAndSystemStatus(id, SystemStatus.ACTIVE);
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
 
         boolean isTitleExist = courseRepository.existsByTitle(courseDTO.getTitle());
@@ -115,30 +141,74 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
 
     @Override
     public void deleteCourse(String id) {
-        Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
+        Course course = courseRepository.findByIdAndSystemStatus(id, SystemStatus.ACTIVE);
         Validator.notNullAndNotEmpty(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
         course.setSystemStatus(SystemStatus.INACTIVE);
         this.save(course);
     }
 
     @Override
-    public CourseDetailResponse getCourseDetailById(String id) {
-        Course course = courseRepository.findCourseByIdAndSystemStatus(id, SystemStatus.ACTIVE);
-        List<ChapterDetailResponse> chapters = chapterRepository.getChaptersByCourseIdAndSystemStatus(id);
-        List<LessonDetailResponse> lessons = lessonRepository.getLessonsByCourseIdAndSystemStatus(id);
+    public CourseDetailInformationDTO getCourseDetailById(String id, AuthUser authUser) {
+        CourseDetailInformationDTO course = courseRepository.getCourseDetailByIdAndUserId(id, authUser.getId());
+        Validator.notNull(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
+        List<CourseChapterListDTO> courseChapterListDTOS = this.chapterRepository.getCourseChapterListByCourseId(course.getCourse().getId());
+        course.setChapters(courseChapterListDTOS);
+        List<LessonDTO> lessonDTOS = this.lessonRepository.getByCourseId(course.getCourse().getId(), true);
+        course.setChapters(chapterHelper.mappingChapterLessonDTO(course.getCourse().getId(), courseChapterListDTOS, lessonDTOS));
+        return course;
+    }
 
-        for (int i = 0; i < chapters.size(); i++) {
-            if (chapters.get(i).getCourseId() == id) {}
-                chapters.get(i).setLessons(lessons);
+    @Override
+    public List<CourseDTO> getCourseDTO() {
+        return this.courseRepository.getCourseDTOList();
+    }
+
+    @Override
+    public CourseDetailInformationDTO getCourseDetailInformationBySlug(String slug, HttpServletRequest request) {
+        Course courseDetail = this.courseRepository.getBySlugAndSystemStatus(slug, SystemStatus.ACTIVE);
+        Validator.notNull(courseDetail, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
+        boolean isUserRegistered = this.checkUserRegisteredCourse(request, courseDetail);
+        courseDetail.setViewed(courseDetail.getViewed() + 1);
+        this.save(courseDetail);
+        CourseDetailInformationDTO response = new CourseDetailInformationDTO(courseDetail, isUserRegistered);
+        List<CourseChapterListDTO> courseChapterListDTOS = this.chapterRepository.getCourseChapterListByCourseId(courseDetail.getId());
+        response.setChapters(courseChapterListDTOS);
+        List<LessonDTO> lessonDTOS = this.lessonRepository.getByCourseId(courseDetail.getId(), false);
+        response.setChapters(chapterHelper.mappingChapterLessonDTO(courseDetail.getId(), courseChapterListDTOS, lessonDTOS));
+        return response;
+    }
+
+    @Override
+    public UserCourseRegisterResponse registerCourse(String courseId, String userId) {
+        Course course = this.courseRepository.findByIdAndSystemStatus(courseId, SystemStatus.ACTIVE);
+        Validator.notNull(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
+        CourseHistory courseHistory = courseHistoryService.getByCourseIdAndUserID(courseId, userId);
+        Lesson lesson = this.lessonRepository.getByNumericalOrderAndSystemStatus(1, SystemStatus.ACTIVE);
+        if(course.getPrice() == 0 && courseHistory == null) {
+             courseHistory = CourseHistory.builder()
+                    .courseId(courseId)
+                    .userId(userId)
+                    .id(UniqueID.getUUID())
+                    .systemStatus(SystemStatus.ACTIVE)
+                     .currentLessonId(lesson.getId())
+                    .build();
+            this.courseHistoryService.save(courseHistory);
         }
 
-        CourseDetailResponse courseDetailResponse = CourseDetailResponse.builder()
-                .title(course.getTitle())
-                .description(course.getDescription())
-                .content(course.getContent())
-                .chapters(chapters)
-                .build();
+        return UserCourseRegisterResponse.builder().status(CourseHistoryStatus.REGISTER_SUCCESS).build();
+    }
 
-        return courseDetailResponse;
+
+    private boolean checkUserRegisteredCourse(HttpServletRequest request, Course courseDetail) {
+        String token = request.getHeader(Constant.HEADER_TOKEN);
+        if(token == null) return false;
+        UserDTO user = userService.getAuthInfoFromToken(token);
+        if(user != null) {
+            if(user.getId() == null) return false;
+            CourseHistory courseHistory = this.courseHistoryService.getByCourseIdAndUserID(courseDetail.getId(), user.getId());
+            return courseHistory != null;
+        }
+
+        return false;
     }
 }

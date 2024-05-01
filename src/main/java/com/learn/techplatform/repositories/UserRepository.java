@@ -27,6 +27,14 @@ public interface UserRepository extends JpaRepository<User, String> {
     """)
     UserDTO getAuthInfo(@Param("userId") String id);
 
+    @Query(value = """
+        SELECT NEW com.learn.techplatform.dto_modals.UserDTO(u)
+        FROM User u, Session s
+        WHERE u.id = s.userId AND u.systemStatus = 'ACTIVE'
+        AND s.systemStatus = 'ACTIVE' AND s.id = :token
+    """)
+    UserDTO getAuthInfoFromAuthToken(@Param("token") String authToken);
+
     User findByEmailAndSystemStatus(String email, SystemStatus status);
     User findByEmailAndSystemStatusAndUserStatus(String email, SystemStatus status, UserStatus userStatus);
 

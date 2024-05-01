@@ -39,10 +39,10 @@ public class LessonController extends AbstractBaseController{
         return responseUtil.successResponse(lessonService.getAll());
     }
 
-    @GetMapping(ApiPath.VIDEO + ApiPath.ID)
+    @GetMapping(ApiPath.ID)
     @Operation(summary = "Get Video Lesson By ID")
     ResponseEntity<RestAPIResponse<Object>> getVideoLessonById(@PathVariable("id") String id) {
-        return responseUtil.successResponse(lessonService.getVideoLessonById(id));
+        return responseUtil.successResponse(lessonService.getLessonById(id));
     }
 
     @PostMapping(ApiPath.VIDEO + ApiPath.ADD)

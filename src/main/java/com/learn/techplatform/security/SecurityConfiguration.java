@@ -64,8 +64,11 @@ public class SecurityConfiguration {
                             "/configuration/ui",
                             "/configuration/security",
                             "/manage/api-docs",
-                            "/v3/api-docs/**"
+                            "/v3/api-docs/**",
                             // hecto process
+
+                            ApiPath.COURSE_API,
+                            ApiPath.COURSE_API + ApiPath.SLUG
                         )
                         .permitAll()
                         // allow CORS option calls
@@ -79,7 +82,7 @@ public class SecurityConfiguration {
                             ApiPath.AUTHENTICATE_API + ApiPath.GOOGLE_LOGIN
                         )
                         .permitAll()
-                            .requestMatchers(HttpMethod.PUT,
+                        .requestMatchers(HttpMethod.PUT,
                                 ApiPath.AUTHENTICATE_API + ApiPath.FORGOT_PASSWORD,
                                 ApiPath.AUTHENTICATE_API + ApiPath.RESET_PASSWORD
                             ).permitAll()
