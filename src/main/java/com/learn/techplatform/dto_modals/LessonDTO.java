@@ -8,11 +8,15 @@ import com.learn.techplatform.common.enums.LessonType;
 import com.learn.techplatform.controllers.models.request.CreateLessonRequest;
 import com.learn.techplatform.controllers.models.request.EditLessonRequest;
 import com.learn.techplatform.entities.Lesson;
+import com.learn.techplatform.entities.LessonQuestion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,6 +38,8 @@ public class LessonDTO {
     private int numericalOrder;
     private String chapterId;
     private String videoId;
+    private String injectHtml;
+    private List<LessonQuestion> answers;
 
     public LessonDTO(Lesson lesson) {
         this.id = lesson.getId();
@@ -43,6 +49,7 @@ public class LessonDTO {
         this.lessonStatus = lesson.getLessonStatus();
         this.chapterId = lesson.getChapterId();
         this.numericalOrder = lesson.getNumericalOrder();
+        this.lessonType = lesson.getLessonType();
     }
 
     public LessonDTO(Lesson lesson, boolean isExpland) {
@@ -53,13 +60,35 @@ public class LessonDTO {
         this.lessonStatus = lesson.getLessonStatus();
         this.chapterId = lesson.getChapterId();
         this.numericalOrder = lesson.getNumericalOrder();
+        this.lessonType = lesson.getLessonType();
         if(isExpland) {
             this.question = lesson.getQuestion();
             this.videoId = lesson.getVideoId();
             this.lessonType = lesson.getLessonType();
             this.thumbnailUrl = lesson.getThumbnailUrl();
             this.content = lesson.getContent();
+            this.injectHtml = lesson.getInjectHtml();
 
+        }
+    }
+
+    public LessonDTO(Lesson lesson, List<LessonQuestion> lessonQuestion) {
+        this.id = lesson.getId();
+        this.title = lesson.getTitle();
+        this.slug = lesson.getSlug();
+        this.duration = lesson.getDuration();
+        this.lessonStatus = lesson.getLessonStatus();
+        this.chapterId = lesson.getChapterId();
+        this.numericalOrder = lesson.getNumericalOrder();
+        this.question = lesson.getQuestion();
+        this.videoId = lesson.getVideoId();
+        this.lessonType = lesson.getLessonType();
+        this.thumbnailUrl = lesson.getThumbnailUrl();
+        this.content = lesson.getContent();
+        this.injectHtml = lesson.getInjectHtml();
+        if(this.lessonType == LessonType.QUESTION) {
+            this.answers = new ArrayList<>();
+            this.answers.addAll(lessonQuestion);
         }
     }
 

@@ -45,6 +45,9 @@ public class Lesson extends AbstractBaseEntity<String> implements Serializable {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "inject_html", columnDefinition = "TEXT")
+    private String injectHtml;
+
     @Column(name = "question", columnDefinition = "TEXT")
     private String question;
 

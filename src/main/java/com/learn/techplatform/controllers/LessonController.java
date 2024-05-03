@@ -6,6 +6,8 @@ import com.learn.techplatform.common.restfullApi.RestAPIResponse;
 import com.learn.techplatform.controllers.models.request.CreateLessonRequest;
 import com.learn.techplatform.controllers.models.request.EditLessonRequest;
 import com.learn.techplatform.dto_modals.LessonDTO;
+import com.learn.techplatform.security.AuthSession;
+import com.learn.techplatform.security.AuthUser;
 import com.learn.techplatform.services.Lesson.LessonService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -41,8 +43,8 @@ public class LessonController extends AbstractBaseController{
 
     @GetMapping(ApiPath.ID)
     @Operation(summary = "Get Video Lesson By ID")
-    ResponseEntity<RestAPIResponse<Object>> getVideoLessonById(@PathVariable("id") String id) {
-        return responseUtil.successResponse(lessonService.getLessonById(id));
+    ResponseEntity<RestAPIResponse<Object>> getVideoLessonById(@PathVariable("id") String id, @AuthSession AuthUser authUser) {
+        return responseUtil.successResponse(lessonService.getLessonById(id, authUser.getId()));
     }
 
     @PostMapping(ApiPath.VIDEO + ApiPath.ADD)

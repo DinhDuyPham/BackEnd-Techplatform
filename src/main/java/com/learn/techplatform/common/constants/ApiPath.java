@@ -57,4 +57,7 @@ public interface ApiPath {
 
     // Validate
     String VALIDATE = "/validate";
+
+    // Course history
+    String CURRENT_LESSON = "/current-lesson";
 }

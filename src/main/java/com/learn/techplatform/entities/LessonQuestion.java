@@ -1,6 +1,8 @@
 package com.learn.techplatform.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -20,6 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(name = "[lesson_question]")
+@JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
 public class LessonQuestion extends AbstractBaseEntity<String> {
     @Column(name = "title")
     private String title;

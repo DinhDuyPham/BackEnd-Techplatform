@@ -9,9 +9,14 @@ import com.learn.techplatform.common.utils.UniqueID;
 import com.learn.techplatform.common.validations.Validator;
 import com.learn.techplatform.controllers.models.response.PagingResponse;
 import com.learn.techplatform.dto_modals.LessonDTO;
+import com.learn.techplatform.entities.CourseHistory;
 import com.learn.techplatform.entities.Lesson;
+import com.learn.techplatform.entities.LessonQuestion;
 import com.learn.techplatform.repositories.LessonRepository;
+import com.learn.techplatform.security.AuthUser;
 import com.learn.techplatform.services.AbstractBaseService;
+import com.learn.techplatform.services.CourseHistory.CourseHistoryService;
+import com.learn.techplatform.services.LessonQuestion.LessonQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +31,11 @@ import java.util.List;
 public class LessonServiceImpl extends AbstractBaseService<Lesson, String> implements LessonService {
     @Autowired
     LessonRepository lessonRepository;
+    @Autowired
+    LessonQuestionService lessonQuestionService;
+
+    @Autowired
+    CourseHistoryService courseHistoryService;
 
     public LessonServiceImpl(JpaRepository<Lesson, String> genericRepository) {
         super(genericRepository);
@@ -44,8 +54,13 @@ public class LessonServiceImpl extends AbstractBaseService<Lesson, String> imple
     }
 
     @Override
-    public LessonDTO getLessonById(String id) {
-        return lessonRepository.getDTOById(id);
+    public LessonDTO getLessonById(String id, String userId) {
+        LessonDTO lessonDTO = lessonRepository.getDTOById(id);
+        if(lessonDTO.getLessonType() == LessonType.QUESTION) {
+            List<LessonQuestion> answers = this.lessonQuestionService.getByLessonId(lessonDTO.getId());
+            lessonDTO.setAnswers(answers);
+        }
+        return lessonDTO;
     }
 
     @Override

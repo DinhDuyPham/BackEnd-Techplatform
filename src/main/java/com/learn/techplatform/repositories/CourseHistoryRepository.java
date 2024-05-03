@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CourseHistoryRepository extends JpaRepository<CourseHistory, String> {
     CourseHistory findByCourseIdAndUserIdAndSystemStatus(String courseId, String userId, SystemStatus systemStatus);
+
+
+    CourseHistory findByUserIdAndSystemStatus(String userId, SystemStatus systemStatus);
 }
