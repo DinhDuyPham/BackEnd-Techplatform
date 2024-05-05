@@ -167,13 +167,20 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
     public CourseDetailInformationDTO getCourseDetailInformationBySlug(String slug, HttpServletRequest request) {
         Course courseDetail = this.courseRepository.getBySlugAndSystemStatus(slug, SystemStatus.ACTIVE);
         Validator.notNull(courseDetail, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
-        boolean isUserRegistered = this.checkUserRegisteredCourse(request, courseDetail);
         courseDetail.setViewed(courseDetail.getViewed() + 1);
         this.save(courseDetail);
+        UserDTO user = getUserFromRequest(request);
+        boolean isUserRegistered = false;
+        CourseHistory courseHistory = null;
+        if(user != null) {
+            courseHistory = this.courseHistoryService.getByCourseIdAndUserID(courseDetail.getId(), user.getId());
+            isUserRegistered = courseHistory != null;
+        }
         CourseDetailInformationDTO response = new CourseDetailInformationDTO(courseDetail, isUserRegistered);
+        response.setLastLessonId(courseHistory != null ? courseHistory.getCurrentLessonId() : null);
         List<CourseChapterListDTO> courseChapterListDTOS = this.chapterRepository.getCourseChapterListByCourseId(courseDetail.getId());
         response.setChapters(courseChapterListDTOS);
-        List<LessonDTO> lessonDTOS = this.lessonRepository.getByCourseId(courseDetail.getId(), false);
+        List<LessonDTO> lessonDTOS = this.lessonRepository.getByCourseId(courseDetail.getId(), user != null);
         response.setChapters(chapterHelper.mappingChapterLessonDTO(courseDetail.getId(), courseChapterListDTOS, lessonDTOS));
         return response;
     }
@@ -199,16 +206,11 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
     }
 
 
-    private boolean checkUserRegisteredCourse(HttpServletRequest request, Course courseDetail) {
+    private UserDTO getUserFromRequest(HttpServletRequest request) {
         String token = request.getHeader(Constant.HEADER_TOKEN);
-        if(token == null) return false;
-        UserDTO user = userService.getAuthInfoFromToken(token);
-        if(user != null) {
-            if(user.getId() == null) return false;
-            CourseHistory courseHistory = this.courseHistoryService.getByCourseIdAndUserID(courseDetail.getId(), user.getId());
-            return courseHistory != null;
+        if(token == null) {
+            return null;
         }
-
-        return false;
+        return this.userService.getAuthInfoFromToken(token);
     }
 }

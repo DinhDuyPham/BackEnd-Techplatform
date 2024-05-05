@@ -28,7 +28,7 @@ import java.util.List;
 public class LessonDTO {
     private String id;
     private String title;
-    private String slug;
+    private String slug;    
     private String thumbnailUrl;
     private long duration;
     private LessonType lessonType;

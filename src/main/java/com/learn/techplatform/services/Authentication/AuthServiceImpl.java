@@ -16,6 +16,7 @@ import com.learn.techplatform.dto_modals.UserDTO;
 import com.learn.techplatform.entities.Session;
 import com.learn.techplatform.entities.User;
 import com.learn.techplatform.firebase.FirebaseService;
+import com.learn.techplatform.firebase.modals.PushNotification;
 import com.learn.techplatform.helper.SessionHelper;
 import com.learn.techplatform.helper.UserHelper;
 import com.learn.techplatform.repositories.SessionRepository;
@@ -156,6 +157,11 @@ public class AuthServiceImpl implements AuthService {
         }
         user = userService.save(user);
         Session sessionAuth = sessionHelper.createSession(user.getId(), DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION, SessionType.GOOGLE_LOGIN);
+        firebaseService.pushNotification(PushNotification.builder()
+                        .userId(user.getId())
+                        .title("Hello")
+                        .body("chao")
+                .build());
         sessionService.save(sessionAuth);
         return AuthResponse.builder()
                 .accessToken(sessionAuth.getId())

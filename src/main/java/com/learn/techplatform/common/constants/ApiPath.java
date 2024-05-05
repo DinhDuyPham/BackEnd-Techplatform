@@ -18,6 +18,7 @@ public interface ApiPath {
     String NEWS_FEED_API = BASE_API_URL +  "/news-feed";
     String COMMENT_API = BASE_API_URL +  "/comment";
     String NOTIFICATION_API = BASE_API_URL +  "/notification";
+    String DEVICE_API = BASE_API_URL +  "/device";
 
 
     // common
@@ -54,6 +55,7 @@ public interface ApiPath {
     String VIDEO = "/video";
     String DOCUMENT = "/document";
     String QUESTION = "/question";
+    String NEXT_LESSON = "/next-lesson";
 
     // Validate
     String VALIDATE = "/validate";

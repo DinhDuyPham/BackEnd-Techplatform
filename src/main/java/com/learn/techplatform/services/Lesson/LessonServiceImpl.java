@@ -1,5 +1,6 @@
 package com.learn.techplatform.services.Lesson;
 
+import com.learn.techplatform.common.enums.LessonStatus;
 import com.learn.techplatform.common.enums.LessonType;
 import com.learn.techplatform.common.enums.SystemStatus;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
@@ -137,5 +138,19 @@ public class LessonServiceImpl extends AbstractBaseService<Lesson, String> imple
         Validator.notNullAndNotEmpty(lesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.LESSON_NOT_FOUND);
         lesson.setSystemStatus(SystemStatus.INACTIVE);
         this.save(lesson);
+    }
+
+    @Override
+    public LessonDTO nextLesson(String currentLessonId) {
+        Lesson currentLesson = lessonRepository.findLessonByIdAndSystemStatus(currentLessonId, SystemStatus.ACTIVE);
+        Validator.notNull(currentLesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.LESSON_NOT_FOUND);
+        Validator.mustTrue(currentLesson.getLessonStatus() == LessonStatus.UNLOCKED, RestAPIStatus.FORBIDDEN, RestStatusMessage.FORBIDDEN_ACCESS_DENIED );
+        currentLesson.setLessonStatus(LessonStatus.DONE);
+        this.save(currentLesson);
+        Lesson nextLesson = lessonRepository.getByNumericalOrderAndSystemStatus(currentLesson.getNumericalOrder() + 1, SystemStatus.ACTIVE);
+        Validator.notNull(nextLesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.NEXT_LESSON_NOT_FOUND);
+        nextLesson.setLessonStatus(LessonStatus.UNLOCKED);
+        this.save(nextLesson);
+        return new LessonDTO(nextLesson, true);
     }
 }

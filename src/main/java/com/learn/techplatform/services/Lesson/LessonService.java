@@ -14,4 +14,6 @@ public interface LessonService extends InterfaceBaseService<Lesson, String> {
     void editLesson(String id, LessonDTO lessonDTO);
     void deleteLesson(String id);
 
+
+    LessonDTO nextLesson(String currentLessonId);
 }

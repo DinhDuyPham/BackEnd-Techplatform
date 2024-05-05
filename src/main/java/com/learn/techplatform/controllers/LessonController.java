@@ -4,10 +4,12 @@ import com.learn.techplatform.common.constants.ApiPath;
 import com.learn.techplatform.common.enums.LessonType;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
 import com.learn.techplatform.controllers.models.request.CreateLessonRequest;
+import com.learn.techplatform.controllers.models.request.CurrentLessonRequest;
 import com.learn.techplatform.controllers.models.request.EditLessonRequest;
 import com.learn.techplatform.dto_modals.LessonDTO;
 import com.learn.techplatform.security.AuthSession;
 import com.learn.techplatform.security.AuthUser;
+import com.learn.techplatform.security.AuthorizeValidator;
 import com.learn.techplatform.services.Lesson.LessonService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -63,10 +65,16 @@ public class LessonController extends AbstractBaseController{
         return responseUtil.successResponse("OK!");
     }
 
+    @AuthorizeValidator
     @DeleteMapping(ApiPath.DELETE)
     @Operation(summary = "Delete lesson")
     ResponseEntity<RestAPIResponse<Object>> deleteLesson(@PathVariable("id") String id) {
         lessonService.deleteLesson(id);
         return responseUtil.successResponse("OK!");
+    }
+
+    @PostMapping(ApiPath.NEXT_LESSON)
+    ResponseEntity<RestAPIResponse<Object>> nextLesson(@Valid @RequestBody CurrentLessonRequest currentLessonRequest) {
+        return responseUtil.successResponse(lessonService.nextLesson(currentLessonRequest.getCurrentLessonId()));
     }
 }

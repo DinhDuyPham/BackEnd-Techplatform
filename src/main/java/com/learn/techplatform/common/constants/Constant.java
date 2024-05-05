@@ -55,4 +55,6 @@ public interface Constant {
 
     // extension
     String[] IMAGE_EXTENSION = {"png", "pjp", "jpg", "jpeg", "jfif", "pjpeg", "ico"};
+
+    String UserAgent = "user-agent";
 }
