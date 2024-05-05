@@ -7,7 +7,7 @@ COPY src /build/src/
 RUN mvn clean package
 COPY target/techplatform-${VERSION}.jar target/application.jar
 
-FROM openjdk:11.0.22-jre-slim
+FROM openjdk:17-jdk-slim
 WORKDIR /app/
 
 COPY --from=BUILDER /build/target/application.jar /app/
