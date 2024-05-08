@@ -45,8 +45,8 @@ public class LessonController extends AbstractBaseController{
 
     @GetMapping(ApiPath.ID)
     @Operation(summary = "Get Video Lesson By ID")
-    ResponseEntity<RestAPIResponse<Object>> getVideoLessonById(@PathVariable("id") String id, @AuthSession AuthUser authUser) {
-        return responseUtil.successResponse(lessonService.getLessonById(id, authUser.getId()));
+    ResponseEntity<RestAPIResponse<Object>> getVideoLessonById(@PathVariable("id") String id) {
+        return responseUtil.successResponse(lessonService.getLessonById(id));
     }
 
     @PostMapping(ApiPath.VIDEO + ApiPath.ADD)

@@ -55,7 +55,7 @@ public class LessonServiceImpl extends AbstractBaseService<Lesson, String> imple
     }
 
     @Override
-    public LessonDTO getLessonById(String id, String userId) {
+    public LessonDTO getLessonById(String id) {
         LessonDTO lessonDTO = lessonRepository.getDTOById(id);
         if(lessonDTO.getLessonType() == LessonType.QUESTION) {
             List<LessonQuestion> answers = this.lessonQuestionService.getByLessonId(lessonDTO.getId());
@@ -93,10 +93,11 @@ public class LessonServiceImpl extends AbstractBaseService<Lesson, String> imple
 
         boolean isTitleExist = lessonRepository.existsByTitle(lessonDTO.getTitle());
         Validator.mustTrue(!isTitleExist, RestAPIStatus.EXISTED, RestStatusMessage.LESSON_ALREADY_EXISTED);
-        if (Validator.checkNull(lessonDTO.getTitle()))
+        if (!Validator.checkNull(lessonDTO.getTitle()) ) {
             lesson.setTitle(lesson.getTitle());
-        else lesson.setTitle(lessonDTO.getTitle());
-        lesson.setSlug(StringUtils.slugify(lessonDTO.getTitle()));
+            lesson.setSlug(StringUtils.slugify(lessonDTO.getTitle()));
+        }
+
 
         if (Validator.checkNull(lessonDTO.getThumbnailUrl()))
             lesson.setThumbnailUrl(lesson.getThumbnailUrl());

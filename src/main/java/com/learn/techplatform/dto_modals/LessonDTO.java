@@ -16,6 +16,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -39,6 +40,8 @@ public class LessonDTO {
     private String chapterId;
     private String videoId;
     private String injectHtml;
+    private Date createdAt;
+    private Date updatedAt;
     private List<LessonQuestion> answers;
 
     public LessonDTO(Lesson lesson) {
@@ -61,6 +64,8 @@ public class LessonDTO {
         this.chapterId = lesson.getChapterId();
         this.numericalOrder = lesson.getNumericalOrder();
         this.lessonType = lesson.getLessonType();
+        this.createdAt = lesson.getCreatedDate();
+        this.updatedAt = lesson.getUpdatedDate();
         if(isExpland) {
             this.question = lesson.getQuestion();
             this.videoId = lesson.getVideoId();

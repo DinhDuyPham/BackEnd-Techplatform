@@ -191,6 +191,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
         Validator.notNull(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
         CourseHistory courseHistory = courseHistoryService.getByCourseIdAndUserID(courseId, userId);
         Lesson lesson = this.lessonRepository.getByNumericalOrderAndSystemStatus(1, SystemStatus.ACTIVE);
+        Validator.notNull(lesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.NOT_FOUND);
         if(course.getPrice() == 0 && courseHistory == null) {
              courseHistory = CourseHistory.builder()
                     .courseId(courseId)
