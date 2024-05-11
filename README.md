@@ -7,5 +7,5 @@ http://150.95.109.144:8080/swagger-ui/index.html
     ```
 2. Run docker
     ```shell
-      docker compose up -d --build
+      docker compose up -d --build  
     ```

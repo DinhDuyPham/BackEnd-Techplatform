@@ -19,6 +19,8 @@ public interface ApiPath {
     String COMMENT_API = BASE_API_URL +  "/comment";
     String NOTIFICATION_API = BASE_API_URL +  "/notification";
     String DEVICE_API = BASE_API_URL +  "/device";
+    String WEBHOOK_API = BASE_API_URL +  "/webhook";
+    String CASSO_WEBHOOK_HANDLER = BASE_API_URL +  "/casso";
 
 
     // common
@@ -62,4 +64,7 @@ public interface ApiPath {
 
     // Course history
     String CURRENT_LESSON = "/current-lesson";
+
+    // webook
+    String CASSO_EVENT = "/casso-handler";
 }

@@ -79,7 +79,8 @@ public class SecurityConfiguration {
                             ApiPath.AUTHENTICATE_API + ApiPath.SIGN_UP,
                             ApiPath.AUTHENTICATE_API + ApiPath.LOGIN,
                             ApiPath.AUTHENTICATE_API + ApiPath.SIGNUP_VERIFY,
-                            ApiPath.AUTHENTICATE_API + ApiPath.GOOGLE_LOGIN
+                            ApiPath.AUTHENTICATE_API + ApiPath.GOOGLE_LOGIN,
+                            ApiPath.CASSO_WEBHOOK_HANDLER
                         )
                         .permitAll()
                         .requestMatchers(HttpMethod.PUT,
