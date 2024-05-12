@@ -35,4 +35,22 @@ public class AppValueConfigure {
 
     @Value("${cloudinary.path-image-upload}")
     public String cloudinaryPathImageUpload;
+
+    @Value("${vietqr.client-id}")
+    public String vietQrClientId;
+
+    @Value("${vietqr.api-key}")
+    public String getVietQrApikey;
+
+    @Value("${vietqr.api-url}")
+    public String vietQrApiUrl;
+
+    @Value("${bank.account-no}")
+    public String bankAccountNo;
+
+    @Value("${bank.account-name}")
+    public String bankAccountName;
+
+    @Value("${bank.acq-id}")
+    public String bankAcqId;
 }

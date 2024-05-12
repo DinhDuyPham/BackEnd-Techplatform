@@ -1,10 +1,8 @@
 package com.learn.techplatform.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Table;
+import com.learn.techplatform.common.enums.OrderHistoryStatus;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -28,4 +26,8 @@ public class OrderHistory extends AbstractBaseEntity<String> implements Serializ
 
     @Column(name = "user_id")
     private String userId;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private OrderHistoryStatus status;
 }

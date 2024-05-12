@@ -47,4 +47,6 @@ public interface CourseRepository extends JpaRepository<Course, String> {
     CourseDetailInformationDTO getCourseDetailByIdAndUserId(@Param("course_id") String courseId,@Param("user_id") String userId);
 
 
+    Course getByCodeAndSystemStatus(String code, SystemStatus systemStatus);
+
 }

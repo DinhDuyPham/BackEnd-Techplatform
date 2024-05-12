@@ -54,4 +54,5 @@ public interface LessonRepository extends JpaRepository<Lesson, String> {
 
 
     Lesson getByNumericalOrderAndSystemStatus(int numericalOrder, SystemStatus status);
+    Lesson getByChapterIdAndNumericalOrderAndSystemStatus(String chapterId, int numericalOrder, SystemStatus systemStatus);
 }

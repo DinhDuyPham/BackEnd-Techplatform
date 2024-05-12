@@ -64,6 +64,7 @@ public interface ApiPath {
 
     // Course history
     String CURRENT_LESSON = "/current-lesson";
+    String PAYMENT_COURSE = "/payment-course";
 
     // webook
     String CASSO_EVENT = "/casso-handler";

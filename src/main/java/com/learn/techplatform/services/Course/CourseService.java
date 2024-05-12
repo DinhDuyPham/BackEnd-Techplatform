@@ -1,6 +1,9 @@
 package com.learn.techplatform.services.Course;
 
+import com.learn.techplatform.common.utils.AppValueConfigure;
 import com.learn.techplatform.controllers.models.response.PagingResponse;
+import com.learn.techplatform.controllers.models.response.PaymentCourseResponse;
+import com.learn.techplatform.controllers.models.response.TokenResponse;
 import com.learn.techplatform.controllers.models.response.UserCourseRegisterResponse;
 import com.learn.techplatform.controllers.models.response.course_response.CourseDetailResponse;
 import com.learn.techplatform.dto_modals.CourseDTO;
@@ -23,4 +26,8 @@ public interface CourseService  extends InterfaceBaseService<Course, String> {
 
     CourseDetailInformationDTO getCourseDetailInformationBySlug(String slug, HttpServletRequest request);
     UserCourseRegisterResponse registerCourse(String courseId, String userId);
+    TokenResponse paymentCourse(String courseId, String userId);
+    PaymentCourseResponse getPaymentCourseInfo(String token, AppValueConfigure appValueConfigure);
+
+    Course getCourseByCode(String courseCode);
 }

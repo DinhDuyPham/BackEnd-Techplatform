@@ -8,6 +8,7 @@ import com.learn.techplatform.services.InterfaceBaseService;
 public interface UserService extends InterfaceBaseService<User, String> {
     UserDTO getUserByEmail(String email);
     UserDTO getAuthInfo(String id);
+    User getByUsername(String username);
     UserDTO getAuthInfoFromToken(String authToken);
     void editUserInfo(String id, UserDTO userDTO);
     void deleteAccount(String id);

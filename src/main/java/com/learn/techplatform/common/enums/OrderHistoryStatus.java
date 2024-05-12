@@ -1,6 +1,7 @@
 package com.learn.techplatform.common.enums;
 
-public enum CourseHistoryStatus {
-    REGISTER_SUCCESS,
+public enum OrderHistoryStatus {
     PENDING,
+    SUCCESS,
+    FAILED
 }

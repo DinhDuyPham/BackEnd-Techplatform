@@ -35,6 +35,7 @@ public class UserHelper {
                 .systemStatus(SystemStatus.ACTIVE)
                 .firstName(userRecord.getDisplayName())
                 .is2Fa(false)
+                .username("user" + UniqueID.generateKey(5))
                 .userStatus(UserStatus.ACTIVE)
                 .email(userRecord.getEmail())
                 .profileImage(userRecord.getPhotoUrl())

@@ -9,6 +9,7 @@ import com.google.firebase.auth.UserRecord;
 import com.google.firebase.messaging.*;
 import com.learn.techplatform.entities.Device;
 import com.learn.techplatform.firebase.modals.PushNotification;
+import com.learn.techplatform.firebase.modals.PushNotificationType;
 import com.learn.techplatform.services.Device.DeviceService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,7 @@ public class FirebaseServiceImpl implements FirebaseService {
             MulticastMessage message = MulticastMessage.builder()
                     .setNotification(notification)
                     .addAllTokens(fcmTokens)
+                    .putAllData(pushNotification.getData())
                     .build();
            firebaseMessaging.sendMulticast(message);
         } catch (FirebaseMessagingException e ) {

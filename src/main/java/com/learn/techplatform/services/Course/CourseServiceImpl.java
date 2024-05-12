@@ -1,39 +1,47 @@
 package com.learn.techplatform.services.Course;
 
+import com.google.gson.JsonObject;
 import com.learn.techplatform.common.constants.Constant;
-import com.learn.techplatform.common.enums.CourseHistoryStatus;
-import com.learn.techplatform.common.enums.CourseType;
-import com.learn.techplatform.common.enums.GenderType;
-import com.learn.techplatform.common.enums.SystemStatus;
+import com.learn.techplatform.common.enums.*;
+import com.learn.techplatform.common.exceptions.ApplicationException;
+import com.learn.techplatform.common.restfullApi.HttpRequestUtil;
 import com.learn.techplatform.common.restfullApi.RestAPIStatus;
 import com.learn.techplatform.common.restfullApi.RestStatusMessage;
+import com.learn.techplatform.common.utils.AppValueConfigure;
 import com.learn.techplatform.common.utils.DateUtil;
 import com.learn.techplatform.common.utils.StringUtils;
 import com.learn.techplatform.common.utils.UniqueID;
 import com.learn.techplatform.common.validations.Validator;
 import com.learn.techplatform.controllers.models.response.PagingResponse;
+import com.learn.techplatform.controllers.models.response.PaymentCourseResponse;
+import com.learn.techplatform.controllers.models.response.TokenResponse;
 import com.learn.techplatform.controllers.models.response.UserCourseRegisterResponse;
-import com.learn.techplatform.controllers.models.response.course_response.ChapterDetailResponse;
-import com.learn.techplatform.controllers.models.response.course_response.CourseDetailResponse;
-import com.learn.techplatform.controllers.models.response.course_response.LessonDetailResponse;
 import com.learn.techplatform.dto_modals.CourseDTO;
 import com.learn.techplatform.dto_modals.LessonDTO;
 import com.learn.techplatform.dto_modals.UserDTO;
 import com.learn.techplatform.dto_modals.course.CourseChapterListDTO;
 import com.learn.techplatform.dto_modals.course.CourseDetailInformationDTO;
-import com.learn.techplatform.entities.Course;
-import com.learn.techplatform.entities.CourseHistory;
-import com.learn.techplatform.entities.Lesson;
-import com.learn.techplatform.entities.User;
+import com.learn.techplatform.entities.*;
 import com.learn.techplatform.helper.ChapterHelper;
+import com.learn.techplatform.helper.SessionHelper;
 import com.learn.techplatform.repositories.ChapterRepository;
 import com.learn.techplatform.repositories.CourseRepository;
 import com.learn.techplatform.repositories.LessonRepository;
 import com.learn.techplatform.security.AuthUser;
 import com.learn.techplatform.services.AbstractBaseService;
 import com.learn.techplatform.services.CourseHistory.CourseHistoryService;
+import com.learn.techplatform.services.OrderHistory.OrderHistoryService;
+import com.learn.techplatform.services.Session.SessionService;
 import com.learn.techplatform.services.User.UserService;
+import com.learn.techplatform.vietqr_bank.modals.GenerateVietQrRequest;
+import com.learn.techplatform.vietqr_bank.modals.VietQrResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +51,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @Service
 public class CourseServiceImpl extends AbstractBaseService<Course, String> implements CourseService {
@@ -60,9 +71,18 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
     CourseHistoryService courseHistoryService;
     @Autowired
     UserService userService;
+    @Autowired
+    OrderHistoryService orderHistoryService;
+    @Autowired
+    SessionHelper sessionHelper;
+    @Autowired
+    SessionService sessionService;
 
     @Autowired
     ChapterHelper chapterHelper;
+
+    private static final HttpRequestUtil httpRequestUtil = new HttpRequestUtil();
+
 
     public CourseServiceImpl(JpaRepository<Course, String> genericRepository) {
         super(genericRepository);
@@ -206,6 +226,82 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
         return UserCourseRegisterResponse.builder().status(CourseHistoryStatus.REGISTER_SUCCESS).build();
     }
 
+    @Override
+    public TokenResponse paymentCourse(String courseId, String userId) {
+        Course course = this.courseRepository.findByIdAndSystemStatus(courseId, SystemStatus.ACTIVE);
+        Validator.notNull(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
+        CourseHistory courseHistory = courseHistoryService.getByCourseIdAndUserID(courseId, userId);
+        Validator.mustTrue(course.getPrice() > 0 && courseHistory == null, RestAPIStatus.FAIL, RestStatusMessage.FAIL);
+        OrderHistory orderHistory = OrderHistory.builder()
+                .id(UniqueID.getUUID())
+                .systemStatus(SystemStatus.ACTIVE)
+                .userId(userId)
+                .courseId(courseId)
+                .status(OrderHistoryStatus.PENDING)
+                .build();
+        this.orderHistoryService.save(orderHistory);
+        Session session = sessionHelper.createSession(userId, course.getId(), DateUtil.getUTCNow().getTime() + DateUtil.FIVE_MINUTE, SessionType.PAYMENT_COURSE);
+        sessionService.save(session);
+        return TokenResponse.builder()
+                .token(session.getId())
+                .expireTime(session.getExpireTime())
+                .build();
+    }
+
+    @Override
+    public PaymentCourseResponse getPaymentCourseInfo(String token, AppValueConfigure appValueConfigure) {
+        Session session = sessionService.getByIdAndSystemStatus(token, SystemStatus.ACTIVE);
+        Validator.notNull(session, RestAPIStatus.NOT_FOUND, RestStatusMessage.NOT_FOUND);
+        UserDTO user = userService.getAuthInfo(session.getUserId());
+        Validator.notNull(user, RestAPIStatus.NOT_FOUND, RestStatusMessage.NOT_FOUND);
+        Course course = this.courseRepository.findByIdAndSystemStatus(session.getData(), SystemStatus.ACTIVE);
+        Validator.notNull(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.NOT_FOUND);
+
+        try {
+            GenerateVietQrRequest generateVietQrRequest = GenerateVietQrRequest.builder()
+                    .accountName(appValueConfigure.bankAccountName)
+                    .accountNo(appValueConfigure.bankAccountNo)
+                    .acqId(appValueConfigure.bankAcqId)
+                    .amount(course.getPrice())
+                    .template(VietQrTemplate.TP_QR)
+                    .addInfo(course.getCode()+" "+user.getUsername())
+                    .build();
+            //        Header
+
+            Map<String, String> headers = new HashMap<>();
+            headers.put("x-client-id", appValueConfigure.vietQrClientId);
+            headers.put("x-api-key", appValueConfigure.getVietQrApikey);
+            headers.put("Content-Type", "application/json; charset=utf-8");
+
+            HttpResponse response = httpRequestUtil.postRequest(
+                    new StringEntity(generateVietQrRequest.toJSONObject().toString(), StandardCharsets.UTF_8),
+                    appValueConfigure.vietQrApiUrl,
+                    ContentType.APPLICATION_JSON,
+                    headers
+            );
+            String bodyRes = getResponseBody(response);
+            JSONObject dataObj = new JSONObject(bodyRes);
+
+            VietQrResponse vietQrResponse = new VietQrResponse(dataObj);
+            return PaymentCourseResponse.builder()
+                    .qrCode(vietQrResponse.getData().getQrCode())
+                    .qrDataURL(vietQrResponse.getData().getQrDataURL())
+                    .accountName(generateVietQrRequest.getAccountName())
+                    .accountNo(generateVietQrRequest.getAccountNo())
+                    .addInfo(generateVietQrRequest.getAddInfo())
+                    .amount(generateVietQrRequest.getAmount())
+                    .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ApplicationException(RestAPIStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Course getCourseByCode(String courseCode) {
+        return this.courseRepository.getByCodeAndSystemStatus(courseCode, SystemStatus.ACTIVE);
+    }
+
 
     private UserDTO getUserFromRequest(HttpServletRequest request) {
         String token = request.getHeader(Constant.HEADER_TOKEN);
@@ -213,5 +309,25 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
             return null;
         }
         return this.userService.getAuthInfoFromToken(token);
+    }
+
+    private static String getResponseBody(HttpResponse response) {
+        if (response == null) {
+            log.error("response is null");
+            throw new ApplicationException(RestAPIStatus.INTERNAL_SERVER_ERROR);
+        }
+        String responseBody;
+        try {
+            responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ApplicationException(RestAPIStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+            throw new ApplicationException(RestAPIStatus.VIETQR_API_ERROR, responseBody);
+        }
+
+        return responseBody;
     }
 }

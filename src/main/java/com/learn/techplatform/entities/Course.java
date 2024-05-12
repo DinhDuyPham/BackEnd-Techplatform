@@ -24,6 +24,9 @@ public class Course extends AbstractBaseEntity<String> implements Serializable {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "thumbnail_url", columnDefinition = "TEXT")
     private String thumbnailUrl;
 

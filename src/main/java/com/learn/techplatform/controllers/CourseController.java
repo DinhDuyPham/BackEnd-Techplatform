@@ -83,4 +83,16 @@ public class CourseController extends AbstractBaseController {
     ResponseEntity<RestAPIResponse<Object>> registerCourse(@PathVariable("id") String id, @AuthSession AuthUser authSession) {
         return responseUtil.successResponse(this.courseService.registerCourse(id, authSession.getId()));
     }
+
+    @PostMapping(ApiPath.PAYMENT_COURSE + ApiPath.ID)
+    @Operation(summary = "payment the course")
+    ResponseEntity<RestAPIResponse<Object>> paymentCourse(@PathVariable("id") String id, @AuthSession AuthUser authSession) {
+        return responseUtil.successResponse(this.courseService.paymentCourse(id, authSession.getId()));
+    }
+
+    @GetMapping(ApiPath.PAYMENT_COURSE + ApiPath.ID)
+    @Operation(summary = "get payment the course")
+    ResponseEntity<RestAPIResponse<Object>> getPaymentCourse(@PathVariable("id") String id) {
+        return responseUtil.successResponse(this.courseService.getPaymentCourseInfo(id,appValueConfigure));
+    }
 }

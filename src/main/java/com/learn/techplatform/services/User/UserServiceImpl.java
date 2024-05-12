@@ -37,6 +37,11 @@ public class UserServiceImpl extends AbstractBaseService<User, String> implement
     }
 
     @Override
+    public User getByUsername(String username) {
+        return this.userRepository.findByUsernameAndSystemStatus(username, SystemStatus.ACTIVE);
+    }
+
+    @Override
     public UserDTO getAuthInfoFromToken(String authToken) {
         return this.userRepository.getAuthInfoFromAuthToken(authToken);
     }

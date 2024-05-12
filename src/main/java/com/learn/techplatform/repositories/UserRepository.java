@@ -40,4 +40,6 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User findByIdAndSystemStatusAndUserStatus(String id, SystemStatus status, UserStatus userStatus);
     boolean existsByEmailAndSystemStatusAndUserStatus(String email, SystemStatus systemStatus, UserStatus userStatus);
+
+    User findByUsernameAndSystemStatus(String username, SystemStatus systemStatus);
 }
