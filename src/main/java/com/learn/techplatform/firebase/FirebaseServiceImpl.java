@@ -14,6 +14,7 @@ import com.learn.techplatform.services.Device.DeviceService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -43,7 +44,12 @@ public class FirebaseServiceImpl implements FirebaseService {
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
-            FirebaseApp app = FirebaseApp.initializeApp(options);
+            FirebaseApp app = null;
+            if(FirebaseApp.getApps().isEmpty()) {
+                app = FirebaseApp.initializeApp(options, "techplatform");
+            }else {
+                app = FirebaseApp.initializeApp(options);
+            }
             this.firebaseMessaging = FirebaseMessaging.getInstance(app);
             log.info("setup firestore time {}", new Date());
 
