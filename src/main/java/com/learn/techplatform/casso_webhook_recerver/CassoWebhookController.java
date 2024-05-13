@@ -57,6 +57,7 @@ public class CassoWebhookController {
 
     @PostMapping
     ResponseEntity<RestAPIResponse<Object>> cassoWebhookHandler(@RequestBody Object data) {
+        log.info("Casso Webhook Handler {}",data);
         OrderHistory orderHistory =  OrderHistory.builder()
                 .id(UniqueID.getUUID())
                 .systemStatus(SystemStatus.ACTIVE)

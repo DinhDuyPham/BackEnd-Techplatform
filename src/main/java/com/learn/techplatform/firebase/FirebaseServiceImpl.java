@@ -73,6 +73,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     public void pushNotification(PushNotification pushNotification) {
         try {
+            log.info("pushNotification {}", pushNotification);
             Notification notification = Notification.builder()
                     .setBody(pushNotification.getBody())
                     .setTitle(pushNotification.getTitle())
