@@ -210,15 +210,15 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
         Course course = this.courseRepository.findByIdAndSystemStatus(courseId, SystemStatus.ACTIVE);
         Validator.notNull(course, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
         CourseHistory courseHistory = courseHistoryService.getByCourseIdAndUserID(courseId, userId);
-        Lesson lesson = this.lessonRepository.getByNumericalOrderAndSystemStatus(1, SystemStatus.ACTIVE);
-        Validator.notNull(lesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.NOT_FOUND);
+        Lesson lesson = this.lessonRepository.getLessonByCourseIdAndLessonNumber(courseId,1);
+        String lessonId = lesson != null ? lesson.getId() : null;
         if(course.getPrice() == 0 && courseHistory == null) {
              courseHistory = CourseHistory.builder()
                     .courseId(courseId)
                     .userId(userId)
                     .id(UniqueID.getUUID())
                     .systemStatus(SystemStatus.ACTIVE)
-                     .currentLessonId(lesson.getId())
+                    .currentLessonId(lessonId)
                     .build();
             this.courseHistoryService.save(courseHistory);
         }

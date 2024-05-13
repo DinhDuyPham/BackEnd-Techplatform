@@ -55,4 +55,14 @@ public interface LessonRepository extends JpaRepository<Lesson, String> {
 
     Lesson getByNumericalOrderAndSystemStatus(int numericalOrder, SystemStatus status);
     Lesson getByChapterIdAndNumericalOrderAndSystemStatus(String chapterId, int numericalOrder, SystemStatus systemStatus);
+
+    @Query("""
+        select l
+        from Lesson l, Course c, Chapter ch
+        where l.chapterId = ch.id and l.systemStatus = 'ACTIVE' and
+            ch.courseId = c.id and ch.systemStatus = 'ACTIVE' and
+            c.systemStatus = 'ACTIVE' and
+            c.id = :course_id and l.numericalOrder = :lesson_number
+    """)
+    Lesson getLessonByCourseIdAndLessonNumber(@Param("course_id") String courseId, @Param("lesson_number") int lessonNumber);
 }

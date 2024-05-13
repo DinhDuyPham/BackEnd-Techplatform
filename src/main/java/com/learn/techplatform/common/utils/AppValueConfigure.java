@@ -53,4 +53,10 @@ public class AppValueConfigure {
 
     @Value("${bank.acq-id}")
     public String bankAcqId;
+
+    @Value("${firebase.project-id}")
+    public String firebaseProjectId;
+
+    @Value("${firebase.credentials.filename}")
+    public String firebaseCredentialsFilename;
 }

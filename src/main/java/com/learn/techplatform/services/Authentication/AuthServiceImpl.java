@@ -157,11 +157,6 @@ public class AuthServiceImpl implements AuthService {
         }
         user = userService.save(user);
         Session sessionAuth = sessionHelper.createSession(user.getId(), DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION, SessionType.GOOGLE_LOGIN);
-        firebaseService.pushNotification(PushNotification.builder()
-                        .userId(user.getId())
-                        .title("Hello")
-                        .body("chao")
-                .build());
         sessionService.save(sessionAuth);
         return AuthResponse.builder()
                 .accessToken(sessionAuth.getId())

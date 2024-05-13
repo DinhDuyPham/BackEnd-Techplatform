@@ -7,14 +7,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.messaging.*;
+import com.learn.techplatform.common.utils.AppValueConfigure;
 import com.learn.techplatform.entities.Device;
 import com.learn.techplatform.firebase.modals.PushNotification;
-import com.learn.techplatform.firebase.modals.PushNotificationType;
 import com.learn.techplatform.services.Device.DeviceService;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -30,6 +29,8 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     @Autowired
     DeviceService deviceService;
+    @Autowired
+    AppValueConfigure appValueConfigure;
 
     private FirebaseMessaging firebaseMessaging;
 
@@ -42,11 +43,12 @@ public class FirebaseServiceImpl implements FirebaseService {
             FileInputStream serviceAccount =
                     new FileInputStream(file);
             FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setProjectId( appValueConfigure.firebaseProjectId)
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
             FirebaseApp app = null;
             if(FirebaseApp.getApps().isEmpty()) {
-                app = FirebaseApp.initializeApp(options, "techplatform");
+                app = FirebaseApp.initializeApp(options);
             }else {
                 app = FirebaseApp.initializeApp(options);
             }
@@ -55,7 +57,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("Error setup Firestore {}", e);
+            log.error("Error setup Firestore {}", e.getMessage());
         }
     }
 

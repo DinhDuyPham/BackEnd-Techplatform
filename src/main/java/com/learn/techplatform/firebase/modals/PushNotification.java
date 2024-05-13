@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -17,5 +18,5 @@ public class PushNotification {
     private String userId;
     private String title;
     private String body;
-    private Map<String, String> data;
+    private Map<String, String> data = new HashMap<>();
 }
