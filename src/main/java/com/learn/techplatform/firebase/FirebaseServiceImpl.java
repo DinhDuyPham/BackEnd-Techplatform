@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -33,27 +34,23 @@ public class FirebaseServiceImpl implements FirebaseService {
     AppValueConfigure appValueConfigure;
 
     private FirebaseMessaging firebaseMessaging;
+    private FirebaseAuth firebaseAuth;
 
 
     @PostConstruct
     public void initialize() {
         try {
-            URL resource = ClassLoader.getSystemResource("firebase/techplatform-firebase-firebase-adminsdk-qkthw-93f4984425.json");
-            File file = new File(resource.toURI());
-            FileInputStream serviceAccount =
-                    new FileInputStream(file);
+            InputStream resourceAsStream = FirebaseServiceImpl.class.getClassLoader()
+                    .getResourceAsStream(appValueConfigure.firebaseCredentialsFilename);
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setProjectId( appValueConfigure.firebaseProjectId)
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setProjectId(appValueConfigure.firebaseProjectId)
+                    .setCredentials(GoogleCredentials.fromStream(resourceAsStream))
                     .build();
-            FirebaseApp app = null;
-            if(FirebaseApp.getApps().isEmpty()) {
-                app = FirebaseApp.initializeApp(options);
-            }else {
-                app = FirebaseApp.initializeApp(options);
-            }
+            FirebaseApp app = FirebaseApp.initializeApp(options, appValueConfigure.firebaseProjectId);
             this.firebaseMessaging = FirebaseMessaging.getInstance(app);
+            this.firebaseAuth = FirebaseAuth.getInstance(app);
             log.info("setup firestore time {}", new Date());
+            log.info("setup firebaseAuth {}", firebaseAuth);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,9 +60,9 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     public UserRecord getAuthGoogle(String token) {
         try {
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+            FirebaseToken decodedToken =  this.firebaseAuth.verifyIdToken(token);
             String uid = decodedToken.getUid();
-            UserRecord user = FirebaseAuth.getInstance().getUser(uid);
+            UserRecord user = this.firebaseAuth.getUser(uid);
             return user;
         } catch (Exception e) {
             System.out.println("USER >> " + e.getMessage());
