@@ -125,8 +125,14 @@ public class CassoWebhookController {
         CassoKeys cassoKeys = new CassoKeys();
         String description = cassoResponse.data.get(0).description;
         String[] parts = description.split("\\s+");
-        cassoKeys.setCourseCode(parts[0]);
-        cassoKeys.setUsername(parts[1]);
+        for (int i = 0; i < parts.length; i++) {
+            if(parts[i].startsWith("TP")) {
+                cassoKeys.setCourseCode(parts[i]);
+            }
+            if(parts[i].startsWith("user")) {
+                cassoKeys.setUsername(parts[i]);
+            }
+        }
         return cassoKeys;
     }
 }
