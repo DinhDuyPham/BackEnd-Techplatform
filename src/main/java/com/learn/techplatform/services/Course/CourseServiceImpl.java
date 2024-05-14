@@ -264,7 +264,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
                     .acqId(appValueConfigure.bankAcqId)
                     .amount(course.getPrice())
                     .template(VietQrTemplate.TP_QR)
-                    .addInfo(" "+course.getCode()+" "+user.getUsername()+ " ")
+                    .addInfo("2003 "+course.getCode()+" "+user.getUsername()+ " 2003")
                     .build();
             //        Header
 
