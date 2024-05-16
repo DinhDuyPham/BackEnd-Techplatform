@@ -1,6 +1,7 @@
 package com.learn.techplatform.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.learn.techplatform.common.enums.CourseType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,6 +30,10 @@ public class Course extends AbstractBaseEntity<String> implements Serializable {
 
     @Column(name = "thumbnail_url", columnDefinition = "TEXT")
     private String thumbnailUrl;
+
+    @Column(name = "img_public_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String imgPublicId;
 
     @Column(name = "slug", columnDefinition = "TEXT")
     private String slug;

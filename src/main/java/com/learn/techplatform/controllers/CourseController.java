@@ -17,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(ApiPath.COURSE_API)
@@ -28,7 +30,14 @@ public class CourseController extends AbstractBaseController {
     @Operation(summary = "Get All Course")
     ResponseEntity<RestAPIResponse<Object>> getAllCourse()
     {
-        return responseUtil.successResponse(courseService.getCourseDTO());
+        String prefixUrlImage =
+                appValueConfigure.cloudinaryUrl
+                        + appValueConfigure.cloudinaryCloudName
+                        + appValueConfigure.cloudinaryPathImageUpload
+                        + "/";
+        List<CourseDTO> courseDTOS = courseService.getCourseDTO();
+        courseDTOS = courseDTOS.stream().peek(item -> item.setThumbnailUrl(prefixUrlImage + item.getThumbnailUrl())).toList();
+        return responseUtil.successResponse(courseDTOS);
     }
 
     @GetMapping(ApiPath.ID)
