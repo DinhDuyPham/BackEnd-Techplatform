@@ -21,7 +21,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -90,6 +92,23 @@ public class FirebaseServiceImpl implements FirebaseService {
         } catch (FirebaseMessagingException e ) {
             log.error("sendPnsToTopic()", e);
         }
+    }
+
+    public void pushNotification(String userId, String title, String body, Map<String, String> data) {
+        this.pushNotification(PushNotification.builder()
+                        .title(title)
+                        .body(body)
+                        .userId(userId)
+                        .data(data)
+                .build());
+    }
+
+    public void pushNotification(String userId, String title, String body) {
+        this.pushNotification(PushNotification.builder()
+                        .title(title)
+                        .body(body)
+                        .userId(userId)
+                .build());
     }
 
 }

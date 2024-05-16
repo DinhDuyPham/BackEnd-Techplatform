@@ -13,6 +13,7 @@ import com.learn.techplatform.controllers.models.request.*;
 import com.learn.techplatform.controllers.models.response.AuthResponse;
 import com.learn.techplatform.controllers.models.response.TokenResponse;
 import com.learn.techplatform.dto_modals.UserDTO;
+import com.learn.techplatform.email_sender.EmailSenderService;
 import com.learn.techplatform.entities.Session;
 import com.learn.techplatform.entities.User;
 import com.learn.techplatform.firebase.FirebaseService;
@@ -49,6 +50,9 @@ public class AuthServiceImpl implements AuthService {
     FirebaseService firebaseService;
 
     @Autowired
+    EmailSenderService emailSenderService;
+
+    @Autowired
     UserHelper userHelper;
     @Autowired
     AuthHelper authHelper;
@@ -76,14 +80,16 @@ public class AuthServiceImpl implements AuthService {
         User user = userHelper.createUser(userDTO, authHelper.createPasswordHash(userDTO.getPasswordHash()));
         user.setLastIpAddress(AppUtil.getClientIpAddress(request));
 
+        String OTP = UniqueID.getRandomOTP();
         Session session = sessionHelper.createSession(
                 user.getId(),
-                StringUtils.base64Encode(UniqueID.getRandomOTP()),
+                StringUtils.base64Encode(OTP),
                 new Date(DateUtil.getUTCNow().getTime() + DateUtil.FIVE_MINUTE).getTime(),
                 SessionType.VERIFY_SIGNUP
         );
         sessionService.save(session);
         userService.save(user);
+        emailSenderService.sendOtp(user.getEmail(), OTP);
         return TokenResponse.builder()
                 .token(session.getId())
                 .expireTime(session.getExpireTime())
@@ -154,6 +160,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmailAndSystemStatusAndUserStatus(userRecord.getEmail(), SystemStatus.ACTIVE, UserStatus.ACTIVE);
         if (user == null) {
             user = userHelper.createUser(userRecord);
+            firebaseService.pushNotification(user.getId(), "Chào mừng tới vơi Techplatform", "Thành viên mới");
         }
         user = userService.save(user);
         Session sessionAuth = sessionHelper.createSession(user.getId(), DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION, SessionType.GOOGLE_LOGIN);
