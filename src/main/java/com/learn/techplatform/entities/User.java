@@ -67,6 +67,9 @@ public class User extends AbstractBaseEntity<String> implements Serializable {
     @Column(name = "is_2_Fa", nullable = false, columnDefinition = "tinyint(1) default 0")
     private boolean is2Fa;
 
+    @Column(name = "is_first", nullable = false, columnDefinition = "tinyint(1) default 0")
+    private boolean isFirst;
+
     @Column(name = "profile_image", columnDefinition = "TEXT")
     private String profileImage;
 
@@ -79,4 +82,8 @@ public class User extends AbstractBaseEntity<String> implements Serializable {
 
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
+
+    @Column(name = "profile_img_public_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String profileImgPublicId;
 }

@@ -27,7 +27,7 @@ public class GenerateVietQrRequest {
         jsonObject.put("accountNo", this.accountNo);
         jsonObject.put("accountName", this.accountName);
         jsonObject.put("acqId", this.acqId);
-        jsonObject.put("amount", 5000);
+        jsonObject.put("amount", this.amount);
         jsonObject.put("template", this.template.getType());
         jsonObject.put("addInfo", this.addInfo);
         return jsonObject;

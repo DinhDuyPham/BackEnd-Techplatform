@@ -117,6 +117,7 @@ public class AuthServiceImpl implements AuthService {
         userSignUp.setUserStatus(UserStatus.ACTIVE);
         userSignUp.setLastIpAddress(AppUtil.getClientIpAddress(request));
         userSignUp.setLastLogin(DateUtil.getUTCNow());
+        userSignUp.setFirst(true);
         userSignUp = userService.save(userSignUp);
 
         session.setData(StringUtils.base64Encode(session.getData()));
@@ -142,6 +143,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setLastIpAddress(AppUtil.getClientIpAddress(request));
         user.setLastLogin(DateUtil.getUTCNow());
+        user.setFirst(false);
         userService.save(user);
 
         Session sessionAuth = sessionHelper.createSessionAuth(user.getId());
@@ -160,7 +162,9 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmailAndSystemStatusAndUserStatus(userRecord.getEmail(), SystemStatus.ACTIVE, UserStatus.ACTIVE);
         if (user == null) {
             user = userHelper.createUser(userRecord);
-            firebaseService.pushNotification(user.getId(), "Chào mừng tới vơi Techplatform", "Thành viên mới");
+            user.setFirst(true);
+        } else {
+            user.setFirst(false);
         }
         user = userService.save(user);
         Session sessionAuth = sessionHelper.createSession(user.getId(), DateUtil.getUTCNow().getTime() + appValueConfigure.JWT_EXPIRATION, SessionType.GOOGLE_LOGIN);

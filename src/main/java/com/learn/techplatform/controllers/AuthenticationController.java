@@ -2,9 +2,11 @@ package com.learn.techplatform.controllers;
 
 
 import com.learn.techplatform.common.constants.ApiPath;
+import com.learn.techplatform.common.enums.UserStatus;
 import com.learn.techplatform.common.restfullApi.RestAPIResponse;
 import com.learn.techplatform.controllers.models.request.*;
 import com.learn.techplatform.dto_modals.UserDTO;
+import com.learn.techplatform.entities.User;
 import com.learn.techplatform.firebase.FirebaseService;
 import com.learn.techplatform.firebase.modals.PushNotification;
 import com.learn.techplatform.security.AuthSession;
@@ -58,8 +60,13 @@ public class AuthenticationController extends AbstractBaseController {
     @GetMapping(ApiPath.AuthInFo)
     @Operation(summary = "Get Auth info")
     ResponseEntity<RestAPIResponse<Object>> authInfo(@Parameter(hidden = true) @AuthSession AuthUser auth) {
-
-        return responseUtil.successResponse(userService.getAuthInfo(auth.getId()));
+        User user = userService.getByIdAndUserStatus(auth.getId(), UserStatus.ACTIVE);
+        String prefixUrlImage =
+                appValueConfigure.cloudinaryUrl
+                        + appValueConfigure.cloudinaryCloudName
+                        + appValueConfigure.cloudinaryPathImageUpload
+                        + "/";
+        return responseUtil.successResponse(new UserDTO(user, prefixUrlImage));
     }
 
     @DeleteMapping(ApiPath.LOGOUT)

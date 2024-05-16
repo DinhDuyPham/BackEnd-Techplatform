@@ -148,7 +148,7 @@ public class LessonServiceImpl extends AbstractBaseService<Lesson, String> imple
         Validator.mustTrue(currentLesson.getLessonStatus() == LessonStatus.UNLOCKED, RestAPIStatus.FORBIDDEN, RestStatusMessage.FORBIDDEN_ACCESS_DENIED );
         currentLesson.setLessonStatus(LessonStatus.DONE);
         this.save(currentLesson);
-        Lesson nextLesson = lessonRepository.getByNumericalOrderAndSystemStatus(currentLesson.getNumericalOrder() + 1, SystemStatus.ACTIVE);
+        Lesson nextLesson = lessonRepository.getNextLessonByCurrentLessonId(currentLesson.getId());
         Validator.notNull(nextLesson, RestAPIStatus.NOT_FOUND, RestStatusMessage.NEXT_LESSON_NOT_FOUND);
         nextLesson.setLessonStatus(LessonStatus.UNLOCKED);
         this.save(nextLesson);

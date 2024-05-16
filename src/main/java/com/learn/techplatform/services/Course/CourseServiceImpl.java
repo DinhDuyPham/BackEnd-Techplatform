@@ -120,6 +120,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
                 .thumbnailUrl(null)
                 .discount(0)
                 .viewed(0)
+                .code("TP"+UniqueID.generateKey(5).toUpperCase())
                 .systemStatus(SystemStatus.ACTIVE)
                 .build();
 
@@ -262,7 +263,7 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
                     .accountName(appValueConfigure.bankAccountName)
                     .accountNo(appValueConfigure.bankAccountNo)
                     .acqId(appValueConfigure.bankAcqId)
-                    .amount(course.getPrice())
+                    .amount(course.getPrice() )
                     .template(VietQrTemplate.TP_QR)
                     .addInfo("KH "+course.getCode()+" U "+user.getUsername()+ " E")
                     .build();

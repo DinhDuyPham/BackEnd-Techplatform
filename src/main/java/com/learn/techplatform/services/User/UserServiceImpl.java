@@ -42,40 +42,15 @@ public class UserServiceImpl extends AbstractBaseService<User, String> implement
     }
 
     @Override
+    public User getByIdAndUserStatus(String id, UserStatus status) {
+        return userRepository.findByIdAndSystemStatusAndUserStatus(id, SystemStatus.ACTIVE, status);
+    }
+
+    @Override
     public UserDTO getAuthInfoFromToken(String authToken) {
         return this.userRepository.getAuthInfoFromAuthToken(authToken);
     }
 
-    @Override
-    public void editUserInfo(String id, UserDTO userDTO) {
-        User user = userRepository.findByIdAndSystemStatusAndUserStatus(id, SystemStatus.ACTIVE, UserStatus.ACTIVE);
-        Validator.notNull(user, RestAPIStatus.NOT_FOUND, RestStatusMessage.USER_NOT_FOUND);
-
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-
-        user.setGender(userDTO.getGender());
-
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        if (Validator.checkNull(userDTO.getPhoneNumber()))
-            user.setPhoneNumber(user.getPhoneNumber());
-
-        user.setDateOfBirth(userDTO.getDateOfBirth());
-
-        user.setBio(userDTO.getBio());
-        if (Validator.checkNull(userDTO.getBio()))
-            user.setBio(user.getBio());
-
-        user.setProfileImage(userDTO.getProfileImage());
-        if (Validator.checkNull(userDTO.getProfileImage()))
-            user.setProfileImage(user.getProfileImage());
-
-        user.setCoverImage(userDTO.getCoverImage());
-        if (Validator.checkNull(userDTO.getCoverImage()))
-            user.setCoverImage(user.getCoverImage());
-
-        this.save(user);
-    }
 
     @Override
     public void deleteAccount(String id) {
@@ -83,6 +58,14 @@ public class UserServiceImpl extends AbstractBaseService<User, String> implement
         Validator.notNull(user, RestAPIStatus.NOT_FOUND, RestStatusMessage.USER_NOT_FOUND);
         user.setSystemStatus(SystemStatus.INACTIVE);
         user.setUserStatus(UserStatus.INACTIVE);
+        this.save(user);
+    }
+
+    @Override
+    public void newUserSurvey(String userId) {
+        User user = userRepository.findByIdAndSystemStatusAndUserStatus(userId, SystemStatus.ACTIVE, UserStatus.ACTIVE);
+        Validator.notNull(user, RestAPIStatus.NOT_FOUND, RestStatusMessage.USER_NOT_FOUND);
+        user.setFirst(false);
         this.save(user);
     }
 }

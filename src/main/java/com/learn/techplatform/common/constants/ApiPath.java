@@ -21,6 +21,7 @@ public interface ApiPath {
     String DEVICE_API = BASE_API_URL +  "/device";
     String WEBHOOK_API = BASE_API_URL +  "/webhook";
     String CASSO_WEBHOOK_HANDLER = BASE_API_URL +  "/casso";
+    String UPLOAD_API = BASE_API_URL +  "/upload";
 
 
     // common
@@ -68,4 +69,7 @@ public interface ApiPath {
 
     // webook
     String CASSO_EVENT = "/casso-handler";
+
+    // user
+    String SURVEY = "/survey";
 }

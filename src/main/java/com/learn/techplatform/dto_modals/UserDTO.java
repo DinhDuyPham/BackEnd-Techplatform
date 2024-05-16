@@ -24,7 +24,7 @@ import java.util.Date;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy.class)
-public class UserDTO  {
+public class    UserDTO  {
     private String id;
 
     private String firstName;
@@ -45,6 +45,7 @@ public class UserDTO  {
     private Date lastLogin;
     private Long dateOfBirth;
     private UserRole userRole;
+    private boolean isFirstLogin;
 
     public UserDTO(SignUpRequest signUpRequest) {
         this.email = signUpRequest.getEmail();
@@ -56,12 +57,10 @@ public class UserDTO  {
     public UserDTO(EditUserRequest editUserRequest) {
         this.firstName = editUserRequest.getFirstName();
         this.lastName = editUserRequest.getLastName();
-        this.gender = GenderType.valueOf(editUserRequest.getGender());
+        this.gender = editUserRequest.getGender();
         this.phoneNumber = editUserRequest.getPhoneNumber();
         this.dateOfBirth = DateUtil.convertStringDateToLong(editUserRequest.getDateOfBirth());
         this.bio = editUserRequest.getBio();
-        this.profileImage = editUserRequest.getProfileImage();
-        this.coverImage = editUserRequest.getCoverImage();
     }
 
     public UserDTO(User user) {
@@ -81,6 +80,27 @@ public class UserDTO  {
         this.userRole = user.getUserRole();
         this.bio = user.getBio();
         this.coverImage = user.getCoverImage();
+        this.isFirstLogin = user.isFirst();
+    }
+
+    public UserDTO(User user, String prefixUrlImage) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.phoneNumber = user.getPhoneNumber();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.passwordHash = user.getPasswordHash();
+        this.username = user.getUsername();
+        this.userStatus = user.getUserStatus();
+        this.profileImage = prefixUrlImage + user.getProfileImage();
+        this.dateOfBirth = user.getDateOfBirth();
+        this.lastIpAddress = user.getLastIpAddress();
+        this.lastLogin = user.getLastLogin();
+        this.systemStatus = user.getSystemStatus();
+        this.userRole = user.getUserRole();
+        this.bio = user.getBio();
+        this.coverImage = user.getCoverImage();
+        this.isFirstLogin = user.isFirst();
     }
 
 }
