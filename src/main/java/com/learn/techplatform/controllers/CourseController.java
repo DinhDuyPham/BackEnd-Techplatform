@@ -50,7 +50,7 @@ public class CourseController extends AbstractBaseController {
     @GetMapping( ApiPath.SLUG)
     @Operation(summary = "Get with slug")
     ResponseEntity<RestAPIResponse<Object>> getCourseDetailBySlug(@PathVariable("slug") String slug, HttpServletRequest request) {
-        return responseUtil.successResponse(courseService.getCourseDetailInformationBySlug(slug, request));
+        return responseUtil.successResponse(courseService.getCourseDetailInformationBySlug(slug, request, appValueConfigure));
     }
 
     @GetMapping(ApiPath.GET_PAGE)

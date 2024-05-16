@@ -185,11 +185,18 @@ public class CourseServiceImpl extends AbstractBaseService<Course, String> imple
     }
 
     @Override
-    public CourseDetailInformationDTO getCourseDetailInformationBySlug(String slug, HttpServletRequest request) {
+    public CourseDetailInformationDTO getCourseDetailInformationBySlug(String slug, HttpServletRequest request, AppValueConfigure appValueConfigure) {
         Course courseDetail = this.courseRepository.getBySlugAndSystemStatus(slug, SystemStatus.ACTIVE);
-        Validator.notNull(courseDetail, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
+        String prefixUrlImage =
+                appValueConfigure.cloudinaryUrl
+                        + appValueConfigure.cloudinaryCloudName
+                        + appValueConfigure.cloudinaryPathImageUpload
+                        + "/";
+            Validator.notNull(courseDetail, RestAPIStatus.NOT_FOUND, RestStatusMessage.COURSE_NOT_FOUND);
+
         courseDetail.setViewed(courseDetail.getViewed() + 1);
         this.save(courseDetail);
+        courseDetail.setThumbnailUrl(prefixUrlImage + courseDetail.getThumbnailUrl());
         UserDTO user = getUserFromRequest(request);
         boolean isUserRegistered = false;
         CourseHistory courseHistory = null;

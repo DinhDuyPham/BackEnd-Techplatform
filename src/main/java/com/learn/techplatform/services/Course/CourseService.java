@@ -24,7 +24,7 @@ public interface CourseService  extends InterfaceBaseService<Course, String> {
     CourseDetailInformationDTO getCourseDetailById(String id, AuthUser authUser);
     List<CourseDTO> getCourseDTO();
 
-    CourseDetailInformationDTO getCourseDetailInformationBySlug(String slug, HttpServletRequest request);
+    CourseDetailInformationDTO getCourseDetailInformationBySlug(String slug, HttpServletRequest request, AppValueConfigure appValueConfigure);
     UserCourseRegisterResponse registerCourse(String courseId, String userId);
     TokenResponse paymentCourse(String courseId, String userId);
     PaymentCourseResponse getPaymentCourseInfo(String token, AppValueConfigure appValueConfigure);
