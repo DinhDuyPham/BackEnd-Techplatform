@@ -18,15 +18,17 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mailtrap.from-mail}")
     private String fromEmail;
 
-    private void  doSendMail(String[] toEmails, String subject, String body) {
+    @Async
+    public void doSendMail(String[] toEmails, String subject, String body) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
 
             message.setTo(toEmails);
             message.setText(body);
+            message.setFrom(this.fromEmail);
             message.setSubject(subject);
             mailSender.send(message);
         } catch (Exception e){
