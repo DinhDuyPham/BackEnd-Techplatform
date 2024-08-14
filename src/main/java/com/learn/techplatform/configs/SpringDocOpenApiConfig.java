@@ -52,7 +52,7 @@ public class SpringDocOpenApiConfig {
                     new Info()
                         .title(apiTitle)
                         .version(applicationValueConfigure.APP_API_VERSION)
-                        .license(new License()  .name("Dang Duy Duc").url("https://www.facebook.com/dangduyduc1908")));
+                        .license(new License()  .name("Pham Dinh Duy").url("https://www.facebook.com/phamdinhduy1502")));
     }
 }
 

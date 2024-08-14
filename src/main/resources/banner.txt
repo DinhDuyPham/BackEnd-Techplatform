@@ -4,6 +4,6 @@
   | |  __/ (__| | | |  __/| | (_| | |_|  _| (_) | |  | | | | | |
   |_|\___|\___|_| |_|_|   |_|\__,_|\__|_|  \___/|_|  |_| |_| |_|
 
-Owner: Duy Duc
+Owner: Đình Duy
 ${app.name} - API Version: ${app.api.version}
 Powered by Spring Boot ${spring-boot.version}
